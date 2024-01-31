@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  react-native-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"  # Metro bundler 포트
+    volumes:
+      - .:/app  # 현재 디렉토리를 컨테이너 내의 /app에 마운트
+    environment:
+      - ANDROID_HOME=/opt/android-studio  # Android Studio 환경 변수
