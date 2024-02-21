@@ -60,7 +60,7 @@ const OcrTest = () => {
       ],
     });
 
-    const apiKey = '자신의 API KEY를 입력하세욧';
+    const apiKey = '자신의 API KEY를 입력하세요';
     const apiUrl = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
 
     try {
