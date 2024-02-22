@@ -25,7 +25,11 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+<<<<<<< HEAD
 target 'ReactNativePractice' do
+=======
+target 'App' do
+>>>>>>> 43a41e7fbb325af053320f95a1c9227ab0f2891e
   config = use_native_modules!
 
   use_react_native!(
@@ -39,7 +43,11 @@ target 'ReactNativePractice' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+<<<<<<< HEAD
   target 'ReactNativePracticeTests' do
+=======
+  target 'AppTests' do
+>>>>>>> 43a41e7fbb325af053320f95a1c9227ab0f2891e
     inherit! :complete
     # Pods for testing
   end
