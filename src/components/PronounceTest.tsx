@@ -1,7 +1,5 @@
-import React, {useState} from 'react';
-import {View, Button, Text} from 'react-native';
-import AudioRecord from 'react-native-audio-record';
-import Sound from 'react-native-sound';
+import React, { useState } from 'react';
+import { View, Button, Text } from 'react-native';
 
 const PronounceTest = () => {
 

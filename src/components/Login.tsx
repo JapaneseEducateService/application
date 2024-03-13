@@ -1,11 +1,21 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity } from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import GoogleSignInButton from './socialLoginBtn/GoogleSignInButton';
+import {storeToken, getToken} from '../utils/authStorage';
+import GithubSignInButton from './socialLoginBtn/GithubSignInButton';
+import KakaoSignInbutton from './socialLoginBtn/KakaoSignInbutton';
+import NaverSignInButton from './socialLoginBtn/NaverSignInButton';
 
-interface Props {}
+interface Props {
+  route: {
+    params: {
+      url: string;
+    };
+  };
+}
 
 type RootStackParamList = {
   Register: undefined;
@@ -25,8 +35,9 @@ const BackButton: React.FC<{onPress: () => void}> = ({onPress}) => {
 const Login: React.FC<Props> = () => {
   const navigation = useNavigation<NavigationProp>();
 
-  const [username, setUsername] = useState<string>('');
+  const [userEmail, setUserEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [provider, setProvider] = useState('');
 
   const goToRegister = () => {
     navigation.navigate('Register');
@@ -38,10 +49,10 @@ const Login: React.FC<Props> = () => {
 
   const onLogin = () => {
     const userData = {
-      name: username,
+      email: userEmail,
       password: password,
     };
-  
+
     axios
       .post('http://10.0.2.2:8000/api/login', userData)
       .then(response => {
@@ -57,58 +68,22 @@ const Login: React.FC<Props> = () => {
         console.error('에러 발생:', error);
       });
   };
-  
 
-  // 토큰 저장
-  const storeToken = async (access_token:string, refresh_token:string) => {
-    try {
-      await AsyncStorage.multiSet([
-          ['@access_token', access_token],
-          ['@refresh_token', refresh_token]
-        ])
-    } catch (e) {
-      console.error('토큰 저장 중 에러 발생:', e);
-    }
-  }
-
-  // 토큰 가져오기
-  const getToken = async () => {
-    try {
-      const [[, access_token], [, refresh_token]] = await AsyncStorage.multiGet(['@access_token', '@refresh_token']);
-  
-      console.log('저장된 액세스 토큰:', access_token);
-      console.log('저장된 리프레쉬 토큰:', refresh_token);
-    } catch(e) {
-      console.error('토큰 불러오는 중 에러 발생:', e);
-    }
-  }
-  
-
-  const onGoogleLogin = () => {
-    // 구글 로그인 로직
-  };
-
-  const onNaverLogin = () => {
-    // 네이버 로그인 로직
-  };
-
-  const onKakaoLogin = () => {
-    // 카카오 로그인 로직
-  };
-
-  const onGithubLogin = () => {
-    // 깃허브 로그인 로직
-  };
+  // 소셜 로그인 로직
+  const onSocialLogin = (provider: string) => {};
 
   return (
-    <View style={{padding: 20}}>
+    <View style={{padding: 20, position: 'relative', flex: 1}}>
       <BackButton onPress={() => navigation.goBack()} />
 
-      <View style={{marginTop: 30}}>
-        <Text style={{fontSize: 24, marginBottom: 20, textAlign: 'center'}}>
-          TAMAGO!
-        </Text>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <Image
+          source={require('../../assets/TamagoLogo.png')}
+          style={{width: 250, height: 60}}
+        />
+      </View>
 
+      <View style={{marginTop: 30}}>
         <TextInput
           style={{
             height: 40,
@@ -117,9 +92,9 @@ const Login: React.FC<Props> = () => {
             marginBottom: 10,
             padding: 10,
           }}
-          placeholder="아이디"
-          value={username}
-          onChangeText={text => setUsername(text)}
+          placeholder="이메일"
+          value={userEmail}
+          onChangeText={text => setUserEmail(text)}
         />
 
         <TextInput
@@ -148,55 +123,22 @@ const Login: React.FC<Props> = () => {
         </TouchableOpacity>
         <TouchableOpacity onPress={goToRegister}>
           <Text style={{color: 'blue', textAlign: 'center'}}>
-            아이디가 없으신가요?
+            계정이 없으신가요?
           </Text>
         </TouchableOpacity>
       </View>
 
-      <View style={{marginTop: 120}}>
-        <TouchableOpacity
-          style={{
-            backgroundColor: 'red',
-            padding: 10,
-            alignItems: 'center',
-            marginBottom: 10,
-          }}
-          onPress={onGoogleLogin}>
-          <Text style={{color: 'white', fontSize: 16}}>구글 로그인</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            backgroundColor: 'green',
-            padding: 10,
-            alignItems: 'center',
-            marginBottom: 10,
-          }}
-          onPress={onNaverLogin}>
-          <Text style={{color: 'white', fontSize: 16}}>네이버 로그인</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            backgroundColor: 'yellow',
-            padding: 10,
-            alignItems: 'center',
-            marginBottom: 10,
-          }}
-          onPress={onKakaoLogin}>
-          <Text style={{color: 'black', fontSize: 16}}>카카오 로그인</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            backgroundColor: 'black',
-            padding: 10,
-            alignItems: 'center',
-            marginBottom: 10,
-          }}
-          onPress={onGithubLogin}>
-          <Text style={{color: 'white', fontSize: 16}}>깃허브 로그인</Text>
-        </TouchableOpacity>
+      {/* 소셜 로그인 부분 */}
+      <View
+        style={{marginTop: 50, justifyContent: 'center', alignItems: 'center'}}>
+        {/* 구글 */}
+        <GoogleSignInButton></GoogleSignInButton>
+        {/* 네이버 */}
+        <NaverSignInButton></NaverSignInButton>
+        {/* 깃허브 */}
+        <GithubSignInButton></GithubSignInButton>
+        {/* 카카오 */}
+        <KakaoSignInbutton></KakaoSignInbutton>
       </View>
     </View>
   );

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "62987728917",
+    "project_id": "socialloginapp-2d87f",
+    "storage_bucket": "socialloginapp-2d87f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62987728917:android:cb56d9f7d3935b6b45b61c",
+        "android_client_info": {
+          "package_name": "com.reactnativepractice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62987728917-ikdlnkf61e8ajqia34c2jogsvv8nep4e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reactnativepractice",
+            "certificate_hash": "a5cf0821c0bfdba0004bb1300a5790b2f24dcd6a"
+          }
+        },
+        {
+          "client_id": "62987728917-jjr6fk665l10js8up803ccvol7t7p2au.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reactnativepractice",
+            "certificate_hash": "d7b8cc9f8d34a462b45b8186bb5ca4a7d5ddcffe"
+          }
+        },
+        {
+          "client_id": "62987728917-6edtqibvdpdcffj7205vjl69655p5u10.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpzYrTzp-xxFCoMwqvVbnLNmIJ43vNlR4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62987728917-6edtqibvdpdcffj7205vjl69655p5u10.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

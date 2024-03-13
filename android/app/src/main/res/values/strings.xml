@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ReactNativePractice</string>
+    <string name="kakao_app_key">a0da27fefe12a8b43e408d1b72827f05</string>
 </resources>

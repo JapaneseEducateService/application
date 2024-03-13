@@ -1,8 +1,8 @@
 const Word: React.FC = () => {
-    return(
-        <>
-        </>
-    )
+  return(
+      <>
+      </>
+  )
 }
 
 export default Word;
