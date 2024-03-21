@@ -9,6 +9,11 @@ import GithubSignInButton from './socialLoginBtn/GithubSignInButton';
 import KakaoSignInbutton from './socialLoginBtn/KakaoSignInbutton';
 import NaverSignInButton from './socialLoginBtn/NaverSignInButton';
 
+
+interface BackButtonProps {
+  onPress: () => void;
+}
+
 interface Props {
   route: {
     params: {
@@ -24,7 +29,7 @@ type RootStackParamList = {
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
-const BackButton: React.FC<{onPress: () => void}> = ({onPress}) => {
+const BackButton: React.FC<BackButtonProps> = ({onPress}) => {
   return (
     <TouchableOpacity onPress={onPress} style={{width: 40, height: 40}}>
       <Text style={{fontSize: 16}}>뒤로</Text>

@@ -21,7 +21,7 @@ import type {
   PlayBackType,
   RecordBackType,
 } from 'react-native-audio-recorder-player';
-import {styles} from './styles';
+import {styles} from './PronounceTestStyles.tsx';
 import Button from './Button.tsx';
 import type {ReactElement} from 'react';
 import {Svg, Path} from 'react-native-svg';
