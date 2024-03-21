@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Alert } from 'react-native';
+import { Image, TouchableOpacity} from 'react-native';
 import { authorize } from 'react-native-app-auth';
 import { useNavigation } from '@react-navigation/native';
 import AccessTokenToServer from '../../utils/AccessTokenToServer'; // 서버로 토큰 전송을 위한 함수 임포트
@@ -31,7 +32,13 @@ const GithubSignInButton = () => {
     }
   };
 
-  return <Button title="깃허브 로그인" onPress={signInWithGithub} />;
+  return (
+    <TouchableOpacity onPress={signInWithGithub}>
+    <Image
+      source={require('../../../assets/githubLogin.jpg')}
+      style={{width: 240, height: 50}}  
+    />
+  </TouchableOpacity>)
 };
 
 export default GithubSignInButton;

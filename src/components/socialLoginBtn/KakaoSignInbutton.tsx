@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, View } from 'react-native';
+import { Image, TouchableOpacity} from 'react-native';
 import { KakaoOAuthToken, login } from '@react-native-seoul/kakao-login';
 import { useNavigation } from '@react-navigation/native';
 import AccessTokenToServer from '../../utils/AccessTokenToServer';
@@ -21,13 +21,12 @@ function KakaoSignInButton() {
     }
   };
   return (
-    <View>
-      <Button
-        testID="btn-login"
-        onPress={() => signInWithKakao()}
-        title={'카카오 로그인'}
-      />
-    </View>
+    <TouchableOpacity onPress={signInWithKakao}>
+        <Image
+          source={require('../../../assets/kakaoLogin.png')}
+          style={{width: 240, height: 50}} 
+        />
+      </TouchableOpacity>
   );
 }
 

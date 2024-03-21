@@ -29,6 +29,7 @@ const AccessTokenToServer = async (accessToken, navigation, provider) => {
       );
       await getToken();
       // 로그인 성공 처리
+      console.log(serverResponse.data)
       navigation.navigate('Main');
     }
   } catch (error) {

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import DatePicker from '@react-native-community/datetimepicker';
 
@@ -106,7 +106,9 @@ const Register: React.FC = () => {
 
       <View>
         <View style={{alignItems: 'center'}}>
-          <Text style={{fontSize: 30, marginBottom: 10}}>TAMAGO!</Text>
+          <Image 
+            style={{width:250, height:70}}
+            source={require('../../assets/TamagoLogo.png')}></Image>
           <Text style={{fontSize: 18, marginBottom: 20}}>회원가입</Text>
         </View>
 
@@ -133,28 +135,24 @@ const Register: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TextInput
-            style={{
-              width: 270,
-              height: 40,
-              borderBottomWidth: 1,
-              borderColor: 'gray',
-              marginBottom: 10,
-              paddingVertical: 5,
-            }}
-            placeholder="아이디"
-            value={username}
-            onChangeText={text => setUsername(text)}
-          />
-          <TouchableOpacity style={{marginLeft: 10}}>
-            <Text
-              style={{color: 'blue', fontSize: 16}}
-              onPress={() => checkDuplicate(username)}>
-              중복 확인
-            </Text>
-          </TouchableOpacity>
-        </View>
+        {/* 이메일 */}
+        <TextInput
+          style={{
+            width: 320,
+            height: 40,
+            borderBottomWidth: 1,
+            borderColor: 'gray',
+            marginBottom: 10,
+            paddingVertical: 5,
+          }}
+          placeholder="이메일"
+          value={email}
+          onChangeText={handleEmailChange}
+        />
+
+        {!isEmailValid ? (
+          <Text style={{color: 'red'}}>올바른 이메일 형식을 입력해주세요.</Text>
+        ) : null}
 
         <TextInput
           style={{
@@ -194,23 +192,7 @@ const Register: React.FC = () => {
           </Text>
         ) : null}
 
-        <TextInput
-          style={{
-            width: 320,
-            height: 40,
-            borderBottomWidth: 1,
-            borderColor: 'gray',
-            marginBottom: 10,
-            paddingVertical: 5,
-          }}
-          placeholder="이메일"
-          value={email}
-          onChangeText={handleEmailChange}
-        />
-
-        {!isEmailValid ? (
-          <Text style={{color: 'red'}}>올바른 이메일 형식을 입력해주세요.</Text>
-        ) : null}
+        
 
         <TextInput
           style={{

@@ -37,7 +37,7 @@ const Login: React.FC<Props> = () => {
 
   const [userEmail, setUserEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [provider, setProvider] = useState('');
+  // const [provider, setProvider] = useState('');
 
   const goToRegister = () => {
     navigation.navigate('Register');
@@ -59,6 +59,7 @@ const Login: React.FC<Props> = () => {
         console.log(response.status);
         if (response.status === 200) {
           storeToken(response.data.access_token, response.data.refresh_token);
+          getToken();
           goToMain();
         } else {
           console.log('로그인 실패');
@@ -79,7 +80,7 @@ const Login: React.FC<Props> = () => {
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <Image
           source={require('../../assets/TamagoLogo.png')}
-          style={{width: 250, height: 60}}
+          style={{width:250, height:70}}
         />
       </View>
 

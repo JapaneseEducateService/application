@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Button } from 'react-native';
+import { Image, TouchableOpacity} from 'react-native';
 import NaverLogin from '@react-native-seoul/naver-login';
 import { useNavigation } from '@react-navigation/native';
 import AccessTokenToServer from '../../utils/AccessTokenToServer'; // 경로는 프로젝트에 맞게 조정하세요.
@@ -28,9 +28,12 @@ const NaverSignInButton = () => {
   };
 
   return (
-    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-      <Button title="네이버 로그인" onPress={handleLogin} />
-    </View>
+    <TouchableOpacity onPress={handleLogin}>
+        <Image
+          source={require('../../../assets/naverLogin.png')}
+          style={{width: 240, height: 50}} 
+        />
+      </TouchableOpacity>
   );
 };
 

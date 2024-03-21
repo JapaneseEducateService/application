@@ -10,7 +10,9 @@ import Register from './src/components/Register';
 import Word from './src/components/Word';
 import Game from './src/components/Game';
 import Community from './src/components/Community';
-import GithubWebView from './src/components/socialLoginBtn/GithubWebView';
+
+import Home from './src/components/Home';
+import UserProfile from './src/components/UserProfile';
 
 interface Props {}
 
@@ -33,9 +35,9 @@ const App: React.FC<Props> = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Main"
+        initialRouteName="Word"
         screenOptions={{
-          headerTitleAlign: 'center',
+          headerTitleAlign: 'center', 
         }}>
         <Stack.Screen
           name="Main"
@@ -45,7 +47,7 @@ const App: React.FC<Props> = () => {
           headerTitleAlign: 'center',
             headerRight: () => (
               <View style={{ marginRight: 10 }}>
-                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <TouchableOpacity onPress={() => navigation.navigate('UserProfile')}>
                   <Image
                     source={require('./assets/userIcon.png')}
                     style={{width: 40, height: 40}} 
@@ -62,7 +64,9 @@ const App: React.FC<Props> = () => {
         <Stack.Screen name="Word" component={Word} />
         <Stack.Screen name="Game" component={Game} />
         <Stack.Screen name="Community" component={Community} />
-        <Stack.Screen name="GithubWebView" component={GithubWebView} />
+        <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+        <Stack.Screen name="UserProfile" component={UserProfile} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
