@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button, Alert } from 'react-native';
 import { Image, TouchableOpacity} from 'react-native';
 import { authorize } from 'react-native-app-auth';
 import { useNavigation } from '@react-navigation/native';
@@ -9,7 +8,7 @@ import AccessTokenToServer from '../../utils/AccessTokenToServer'; // 서버로 
 const config = {
   clientId: '5fd7aa1f56fa20c6f79c',
   clientSecret: 'd1280b8fdd84657d6927f381108dc533fa271a62',
-  redirectUrl: "myapp://callback",
+  redirectUrl: "myapp://auth",
   scopes: ['user'],
   serviceConfiguration: {
     authorizationEndpoint: 'https://github.com/login/oauth/authorize',

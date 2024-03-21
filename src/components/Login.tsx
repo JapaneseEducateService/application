@@ -75,9 +75,6 @@ const Login: React.FC<Props> = () => {
       });
   };
 
-  // 소셜 로그인 로직
-  const onSocialLogin = (provider: string) => {};
-
   return (
     <View style={{padding: 20, position: 'relative', flex: 1}}>
       <BackButton onPress={() => navigation.goBack()} />
