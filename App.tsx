@@ -7,12 +7,16 @@ import Login from './src/components/Login';
 import OcrTest from './src/components/OcrTest';
 import PronounceTest from './src/components/PronounceTest';
 import Register from './src/components/Register';
-import Word from './src/components/Word';
+import WordMain from './src/components/word/WordMain';
 import Game from './src/components/Game';
 import Community from './src/components/Community';
 
 import Home from './src/components/Home';
 import UserProfile from './src/components/UserProfile';
+import CreateVocabulary from './src/components/word/CreateVocabulary';
+import { HeaderBackButton } from 'react-navigation-stack';
+import MyVocabulary from './src/components/word/MyVocabulary';
+import VocabularyInfo from './src/components/word/VocabularyInfo';
 
 interface Props {}
 
@@ -35,10 +39,14 @@ const App: React.FC<Props> = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
+        // 시작지점
         initialRouteName="Home"
         screenOptions={{
           headerTitleAlign: 'center',
         }}>
+          
+
+        {/* 메인 화면 */}
         <Stack.Screen
           name="Main"
           component={Main}
@@ -56,6 +64,7 @@ const App: React.FC<Props> = () => {
                 </TouchableOpacity>
               </View>
             ),
+            headerLeft: () => null,
           })}
         />
         <Stack.Screen
@@ -70,7 +79,54 @@ const App: React.FC<Props> = () => {
           component={Register}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Word" component={Word} />
+        {/* 단어장 화면 */}
+        <Stack.Screen
+          name="WordMain"
+          component={WordMain}
+          options={({navigation}) => ({
+            headerTitle: LogoTitle,
+            headerTitleAlign: 'center',
+            headerRight: () => (
+              <View style={{marginRight: 10}}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('UserProfile')}>
+                  <Image
+                    source={require('./assets/userIcon.png')}
+                    style={{width: 40, height: 40}}
+                  />
+                </TouchableOpacity>
+              </View>
+            ),
+            headerLeft: () => (
+              <HeaderBackButton
+                onPress={() => navigation.goBack()}
+                tintColor={'black'}
+              />
+            ),
+          })}
+        />
+
+        {/* 단어장 만들기 화면 */}
+        <Stack.Screen
+          name="CreateVocabulary"
+          component={CreateVocabulary}
+          options={({navigation}) => ({
+            headerTitle: LogoTitle,
+            headerTitleAlign: 'center',
+            headerRight: () => (
+              <View style={{marginRight: 10}}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('UserProfile')}>
+                  <Image
+                    source={require('./assets/userIcon.png')}
+                    style={{width: 40, height: 40}}
+                  />
+                </TouchableOpacity>
+              </View>
+            ),
+          })}
+        />
+
         <Stack.Screen name="Game" component={Game} />
         <Stack.Screen name="Community" component={Community} />
         <Stack.Screen
@@ -78,8 +134,19 @@ const App: React.FC<Props> = () => {
           component={Home}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="UserProfile" component={UserProfile} />
+        {/* 유저 프로필 화면 */}
+        <Stack.Screen
+          name="UserProfile"
+          component={UserProfile}
+          options={() => ({
+            headerTitle: LogoTitle,
+            headerTitleAlign: 'center',
+          })}
+        />
+        <Stack.Screen name="MyVocabulary" component={MyVocabulary} />
+        <Stack.Screen name="VocabularyInfo" component={VocabularyInfo} />
       </Stack.Navigator>
+      
     </NavigationContainer>
   );
 };

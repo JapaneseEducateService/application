@@ -1,9 +1,9 @@
 // 전달 받은 access_token 및 refresh_token을 AsyncStorage에 저장하는 함수
-// storeToken(), getToken()
+// storeToken(), getToken(), deleteToken()
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const storeToken = async (access_token, refresh_token) => {
+const storeToken = async (access_token: string, refresh_token: string) => {
   try {
     await AsyncStorage.multiSet([
       ['@access_token', access_token],
@@ -21,14 +21,20 @@ const getToken = async () => {
       '@refresh_token',
     ]);
 
-    console.log('저장된 액세스 토큰:', access_token);
-    console.log('저장된 리프레시 토큰:', refresh_token);
-    
-    return { access_token, refresh_token };
+    return {access_token, refresh_token};
   } catch (error) {
     console.error('토큰 불러오는 중 에러 발생:', error);
     return null;
   }
 };
 
-export { storeToken, getToken };
+const deleteToken = async () => {
+  try {
+    // AsyncStorage에서 access_token과 refresh_token 삭제
+    await AsyncStorage.multiRemove(['@access_token', '@refresh_token']);
+  } catch (error) {
+    console.error('토큰 삭제 중 에러 발생:', error);
+  }
+};
+
+export {storeToken, getToken, deleteToken};

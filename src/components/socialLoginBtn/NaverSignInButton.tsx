@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, TouchableOpacity} from 'react-native';
 import NaverLogin from '@react-native-seoul/naver-login';
 import { useNavigation } from '@react-navigation/native';
-import AccessTokenToServer from '../../utils/AccessTokenToServer'; // 경로는 프로젝트에 맞게 조정하세요.
+import AccessTokenToServer from '../../utils/AccessTokenToServer';
 
 const NaverSignInButton = () => {
   const navigation = useNavigation();
@@ -16,8 +16,6 @@ const NaverSignInButton = () => {
         consumerSecret: 'Hw3fjt_51e',
       });
       if (result && result.successResponse) {
-
-        console.log('Access Token:', result.successResponse.accessToken);
 
         // 서버에 액세스 토큰 전달
         AccessTokenToServer(result.successResponse.accessToken, navigation, provider);

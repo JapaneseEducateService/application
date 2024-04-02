@@ -3,7 +3,7 @@ import { Image, TouchableOpacity} from 'react-native';
 import {GoogleSignin} from '@react-native-community/google-signin';
 import axios from 'axios';
 import AccessTokenToServer from '../../utils/AccessTokenToServer';
-import { useNavigation } from '@react-navigation/native'; // 네비게이션 훅 추가
+import { useNavigation } from '@react-navigation/native';
 
 const googleConfig = {
   webClientId:
@@ -40,8 +40,6 @@ const GoogleSignInButton = () => {
       const json = response.data;
 
       const accessToken = json.access_token;
-
-      console.log('구글에서 받은 액세스 토큰: ', accessToken);
 
       // 서버에 액세스 토큰 전달
       AccessTokenToServer(accessToken, navigation, provider);

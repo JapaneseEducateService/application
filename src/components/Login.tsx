@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import axios from 'axios';
 import GoogleSignInButton from './socialLoginBtn/GoogleSignInButton';
-import {storeToken, getToken} from '../utils/authStorage';
+import {storeToken, getToken} from '../utils/AuthStorage';
 import GithubSignInButton from './socialLoginBtn/GithubSignInButton';
 import KakaoSignInbutton from './socialLoginBtn/KakaoSignInbutton';
 import NaverSignInButton from './socialLoginBtn/NaverSignInButton';
@@ -28,14 +28,6 @@ type RootStackParamList = {
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
-
-const BackButton: React.FC<BackButtonProps> = ({onPress}) => {
-  return (
-    <TouchableOpacity onPress={onPress} style={{width: 40, height: 40}}>
-      <Text style={{fontSize: 16}}>뒤로</Text>
-    </TouchableOpacity>
-  );
-};
 
 const Login: React.FC<Props> = () => {
   const navigation = useNavigation<NavigationProp>();
@@ -61,8 +53,11 @@ const Login: React.FC<Props> = () => {
     axios
       .post('http://10.0.2.2:8000/api/login', userData)
       .then(response => {
-        console.log(response.status);
         if (response.status === 200) {
+          // 로그인이 성공하면 입력창을다시 초기화 시켜줘야 함
+          setUserEmail('');
+          setPassword('');
+
           storeToken(response.data.access_token, response.data.refresh_token);
           getToken();
           goToMain();
@@ -77,9 +72,7 @@ const Login: React.FC<Props> = () => {
 
   return (
     <View style={{padding: 20, position: 'relative', flex: 1}}>
-      <BackButton onPress={() => navigation.goBack()} />
-
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{justifyContent: 'center', alignItems: 'center', marginTop:20}}>
         <Image
           source={require('../../assets/TamagoLogo.png')}
           style={{width:250, height:70}}

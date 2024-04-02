@@ -4,15 +4,14 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 interface Item {
-  itemId: "OcrTest" | "PronounceTest" | "Word" | "Community" | "Game";
+  itemId: "PronounceTest" | "WordMain" | "Community" | "Game";
   title: string;
   description: string;
 }
 
 type RootStackParamList = {
-  OcrTest: undefined;
   PronounceTest: undefined;
-  Word: undefined;
+  WordMain: undefined;
   Community: undefined;
   Game: undefined;
 };
@@ -23,11 +22,10 @@ const Main: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
 
   const data: Item[] = [
-    { itemId: 'OcrTest', title: 'OCR 테스트', description: '설명1'},
-    { itemId: 'PronounceTest', title: '발음 평가', description: '설명2' },
-    { itemId: 'Word', title: '단어장', description: '설명3' },
-    { itemId: 'Community', title: '커뮤니티', description: '설명4' },
-    { itemId: 'Game', title: '게임', description: '설명5' },
+    { itemId: 'PronounceTest', title: '발음 평가', description: '설명1' },
+    { itemId: 'WordMain', title: '단어장', description: '설명2' },
+    { itemId: 'Community', title: '커뮤니티', description: '설명3' },
+    { itemId: 'Game', title: '게임', description: '설명4' },
   ];
 
   const renderItem = ({ item }: { item: Item }) => (
@@ -58,7 +56,7 @@ const Main: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#394867',
+    backgroundColor: '#212A3E',
   },
   scrollView: {
     marginTop: '40%',

@@ -12,12 +12,10 @@ function KakaoSignInButton() {
     try {
       const token: KakaoOAuthToken = await login();
 
-      console.log("카카오에서 받은 엑세스 토큰: ", token.accessToken);
-
       // 서버에 액세스 토큰 전달
       AccessTokenToServer(token.accessToken, navigation, provider);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.error(error);
     }
   };
   return (

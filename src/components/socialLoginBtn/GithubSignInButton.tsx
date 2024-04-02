@@ -21,13 +21,9 @@ const GithubSignInButton = () => {
   const signInWithGithub = async () => {
     try {
       const authState = await authorize(config);
-      console.log(authState);
-      console.log(`깃허브에서 받은 엑세스토큰: ${authState.accessToken}`);
-      // 서버에 액세스 토큰 전달
       AccessTokenToServer(authState.accessToken, navigation, 'github'); // 네비게이션과 프로바이더를 인자로 추가할 수 있습니다.
     } catch (error) {
       console.error(error);
-      console.log(error);
     }
   };
 
