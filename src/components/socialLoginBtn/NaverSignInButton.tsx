@@ -26,10 +26,10 @@ const NaverSignInButton = () => {
   };
 
   return (
-    <TouchableOpacity onPress={handleLogin}>
+    <TouchableOpacity onPress={handleLogin} style={{margin:10}}>
         <Image
-          source={require('../../../assets/naverLogin.png')}
-          style={{width: 240, height: 50}} 
+          source={require('../../../assets/naverLoginIcon.png')}
+          style={{width: 50, height: 50, borderRadius:10}} 
         />
       </TouchableOpacity>
   );

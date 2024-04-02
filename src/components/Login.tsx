@@ -3,12 +3,8 @@ import {View, Text, TextInput, TouchableOpacity, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import axios from 'axios';
-import GoogleSignInButton from './socialLoginBtn/GoogleSignInButton';
 import {storeToken, getToken} from '../utils/AuthStorage';
-import GithubSignInButton from './socialLoginBtn/GithubSignInButton';
-import KakaoSignInbutton from './socialLoginBtn/KakaoSignInbutton';
-import NaverSignInButton from './socialLoginBtn/NaverSignInButton';
-
+import {NavigationActions} from 'react-navigation';
 
 interface BackButtonProps {
   onPress: () => void;
@@ -28,6 +24,17 @@ type RootStackParamList = {
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
+
+const BackButton: React.FC<BackButtonProps> = ({onPress}) => {
+  return (
+    <TouchableOpacity onPress={onPress} style={{width: 40, height: 40}}>
+      <Image
+        source={require('../../assets/backButton.png')}
+        style={{width: 40, height: 40, margin: 2}}
+      />
+    </TouchableOpacity>
+  );
+};
 
 const Login: React.FC<Props> = () => {
   const navigation = useNavigation<NavigationProp>();
@@ -72,10 +79,13 @@ const Login: React.FC<Props> = () => {
 
   return (
     <View style={{padding: 20, position: 'relative', flex: 1}}>
-      <View style={{justifyContent: 'center', alignItems: 'center', marginTop:20}}>
+      <BackButton onPress={() => navigation.goBack()} />
+
+      <View
+        style={{justifyContent: 'center', alignItems: 'center', marginTop: 20}}>
         <Image
           source={require('../../assets/TamagoLogo.png')}
-          style={{width:250, height:70}}
+          style={{width: 250, height: 70}}
         />
       </View>
 
@@ -109,10 +119,19 @@ const Login: React.FC<Props> = () => {
 
         <TouchableOpacity
           style={{
-            backgroundColor: 'blue',
+            backgroundColor: '#5E81F4',
             padding: 10,
             alignItems: 'center',
             marginBottom: 10,
+            borderRadius: 10,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+            shadowOpacity: 0.3,
+            shadowRadius: 7.65,
+            elevation: 3,
           }}
           onPress={onLogin}>
           <Text style={{color: 'white', fontSize: 16}}>로그인</Text>
@@ -122,19 +141,6 @@ const Login: React.FC<Props> = () => {
             계정이 없으신가요?
           </Text>
         </TouchableOpacity>
-      </View>
-
-      {/* 소셜 로그인 부분 */}
-      <View
-        style={{marginTop: 50, justifyContent: 'center', alignItems: 'center'}}>
-        {/* 구글 */}
-        <GoogleSignInButton></GoogleSignInButton>
-        {/* 네이버 */}
-        <NaverSignInButton></NaverSignInButton>
-        {/* 깃허브 */}
-        <GithubSignInButton></GithubSignInButton>
-        {/* 카카오 */}
-        <KakaoSignInbutton></KakaoSignInbutton>
       </View>
     </View>
   );

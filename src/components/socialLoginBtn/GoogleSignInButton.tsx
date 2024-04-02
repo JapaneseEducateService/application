@@ -1,9 +1,9 @@
 import React from 'react';
-import { Image, TouchableOpacity} from 'react-native';
+import {Image, TouchableOpacity} from 'react-native';
 import {GoogleSignin} from '@react-native-community/google-signin';
 import axios from 'axios';
 import AccessTokenToServer from '../../utils/AccessTokenToServer';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const googleConfig = {
   webClientId:
@@ -19,7 +19,7 @@ GoogleSignin.configure({
 const GoogleSignInButton = () => {
   const navigation = useNavigation();
 
-  const provider = "google";
+  const provider = 'google';
 
   const signInWithGoogle = async () => {
     try {
@@ -43,19 +43,26 @@ const GoogleSignInButton = () => {
 
       // 서버에 액세스 토큰 전달
       AccessTokenToServer(accessToken, navigation, provider);
-
     } catch (error) {
       console.error('Google 로그인 에러:', error);
     }
   };
 
   return (
-      <TouchableOpacity onPress={signInWithGoogle}>
-        <Image
-          source={require('../../../assets/googleLogin.png')}
-          style={{width: 240, height: 50}} 
-        />
-      </TouchableOpacity>
+    <TouchableOpacity
+      onPress={signInWithGoogle}
+      style={{
+        margin: 10,
+      }}>
+      <Image
+        source={require('../../../assets/googleLoginIcon.png')}
+        style={{
+          width: 50,
+          height: 50,
+          borderRadius: 10,
+        }}
+      />
+    </TouchableOpacity>
   );
 };
 

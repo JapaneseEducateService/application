@@ -28,10 +28,10 @@ const GithubSignInButton = () => {
   };
 
   return (
-    <TouchableOpacity onPress={signInWithGithub}>
+    <TouchableOpacity onPress={signInWithGithub} style={{margin:10 }}>
     <Image
-      source={require('../../../assets/githubLogin.jpg')}
-      style={{width: 240, height: 50}}  
+      source={require('../../../assets/githubLoginIcon.png')}
+      style={{width: 50, height: 50, borderRadius:10}}  
     />
   </TouchableOpacity>)
 };

@@ -19,10 +19,10 @@ function KakaoSignInButton() {
     }
   };
   return (
-    <TouchableOpacity onPress={signInWithKakao}>
+    <TouchableOpacity onPress={signInWithKakao} style={{margin:10}}>
         <Image
-          source={require('../../../assets/kakaoLogin.png')}
-          style={{width: 240, height: 50}} 
+          source={require('../../../assets/kakaoLoginIcon.png')}
+          style={{width: 50, height: 50, borderRadius:10}} 
         />
       </TouchableOpacity>
   );

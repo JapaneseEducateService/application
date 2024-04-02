@@ -15,7 +15,7 @@ import DatePicker from '@react-native-community/datetimepicker';
 import LoadingBar from './LoadingBar';
 
 type RootStackParamList = {
-  Login: undefined;
+  Home: undefined;
   UserProfile: undefined;
 };
 
@@ -145,7 +145,7 @@ const UserProfile: React.FC = () => {
         // 로그아웃 요청 성공시 프론트에서도 토큰 값 삭제하고 Login 컴포넌트로 리다이렉션
         if (response.data.status == 'Success') {
           deleteToken();
-          navigation.navigate('Login');
+          navigation.navigate('Home');
         }
       })
       .catch(error => {

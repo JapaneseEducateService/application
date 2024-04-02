@@ -2,6 +2,10 @@ import React from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import GoogleSignInButton from './socialLoginBtn/GoogleSignInButton';
+import GithubSignInButton from './socialLoginBtn/GithubSignInButton';
+import KakaoSignInbutton from './socialLoginBtn/KakaoSignInbutton';
+import NaverSignInButton from './socialLoginBtn/NaverSignInButton';
 
 type RootStackParamList = {
   Home: undefined;
@@ -21,49 +25,79 @@ const Home: React.FC = () => {
     <View style={styles.container}>
       <Image
         source={require('../../assets/TamagoLogo.png')}
-          style={{width: 300, height: 70, marginTop: 100}}
-        />
-        <Text style={{fontSize:20}}>일본어 학습 도우미 앱</Text>
+        style={{width: 250, height: 60, marginTop: 50}}
+      />
+      <Text style={{fontSize: 15}}>일본어 학습 도우미 앱</Text>
+      <View></View>
 
+      <Image
+        source={require('../../assets/japanLogo.png')}
+        style={{width: 400, height: 400}}
+      />
 
-        <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
-          <Text style={styles.buttonText}>ログイン</Text>
-        </TouchableOpacity>
+      {/* 소셜 로그인 부분 */}
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'row',
+          marginTop: 50,
+        }}>
+        {/* 구글 */}
+        <GoogleSignInButton></GoogleSignInButton>
+        {/* 네이버 */}
+        <NaverSignInButton></NaverSignInButton>
+        {/* 깃허브 */}
+        <GithubSignInButton></GithubSignInButton>
+        {/* 카카오 */}
+        <KakaoSignInbutton></KakaoSignInbutton>
       </View>
+
+      <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
+        <Text style={styles.buttonText}>로그인하기</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#f5f5f7',
     alignItems: 'center',
   },
   text: {
-    fontSize: 20,
+    fontSize: 15,
     color: 'white',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   button: {
-    width:150,
-    height:50,
-    backgroundColor: '#5E81F4',
-    paddingVertical: 10,
+    width: '70%',
+    height: 40,
+    backgroundColor: '#006fff',
     paddingHorizontal: 20,
     borderRadius: 5,
-    marginTop: 350,
-    justifyContent: "center"
+    justifyContent: 'center',
+    marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 7.65,
+    elevation: 3,
   },
   buttonText: {
     color: 'white',
     fontSize: 20,
-    textAlign:"center",
-    marginBottom: 5
+    textAlign: 'center',
+    marginBottom: 5,
   },
   background: {
     flex: 1,
     resizeMode: 'cover',
-    justifyContent: 'center', 
+    justifyContent: 'center',
   },
 });
 
