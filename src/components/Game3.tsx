@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {
   Dimensions,
+  Image,
   PermissionsAndroid,
   Platform,
   SafeAreaView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -21,7 +23,7 @@ import type {
   PlayBackType,
   RecordBackType,
 } from 'react-native-audio-recorder-player';
-import {styles} from './PronounceTestStyles.tsx';
+import {styles} from '../components/pronounce/PronounceTestStyles.tsx';
 import Button from './Button.tsx';
 import type {ReactElement} from 'react';
 import {Svg, Path} from 'react-native-svg';
@@ -34,12 +36,15 @@ interface State {
   currentDurationSec: number;
   playTime: string;
   duration: string;
-  meter: number; // 미터링 값 상태 추가
+  meter: number; // 미터링 값 상태 추가 
+  isRecoding: boolean;
 }
 
 const screenWidth = Dimensions.get('screen').width;
 
-class PronounceTest extends Component<any, State> {
+
+class Game2 extends Component<any, State> {
+
   private dirs = RNFetchBlob.fs.dirs;
   private path = Platform.select({
     ios: undefined,
@@ -64,7 +69,8 @@ class PronounceTest extends Component<any, State> {
       currentDurationSec: 0,
       playTime: '00:00:00',
       duration: '00:00:00',
-      meter: 0, // 초기값 설정
+      meter: 0,
+      isRecoding: false,
     };
 
     // 초기화
@@ -83,6 +89,23 @@ class PronounceTest extends Component<any, State> {
 
     return (
       <SafeAreaView style={styles.container}>
+        <View style={{marginTop: 10, width: '100%', alignItems: 'center'}}>
+          <TextInput
+            style={{
+              width: '85%',
+              height: 60,
+              borderColor: 'gray',
+              borderBottomWidth: 3,
+              margin: 10,
+              padding: 10,
+              fontSize: 15,
+              backgroundColor:'white',
+            }}
+            placeholder="기준 텍스트를 입력해 주세요."
+          />
+        </View>
+
+        <TextInput></TextInput>
         <Text style={styles.txtRecordCounter}>{this.state.recordTime}</Text>
         <View style={styles.viewRecorder}>
           <View style={styles.recordBtnWrapper}>
@@ -90,13 +113,13 @@ class PronounceTest extends Component<any, State> {
               style={styles.btn}
               onPress={this.onStartRecord}
               textStyle={styles.txt}>
-              Record
+              녹음시작
             </Button>
             <Button
               style={[styles.btn, {marginLeft: 12}]}
               onPress={this.onStopRecord}
               textStyle={styles.txt}>
-              Stop
+              저장
             </Button>
           </View>
           {/* 그래프 추가 */}
@@ -135,7 +158,7 @@ class PronounceTest extends Component<any, State> {
                 },
               ]}
               onPress={this.onStopPlay}
-              textStyle={styles.txt}>
+              textStyle={styles.txt}> 
               Stop
             </Button>
           </View>
@@ -147,33 +170,30 @@ class PronounceTest extends Component<any, State> {
   // 데이터 포인트를 저장하는 배열
   private dataPoints: number[] = [];
 
+  // 화면에 표시할 최대 데이터 포인트 수
+  private maxDataPoints = 20;
 
-// 화면에 표시할 최대 데이터 포인트 수
-private maxDataPoints = 20; 
+  private createPath = (): string => {
+    const adjustedMeterValue = this.state.meter + 60;
+    this.dataPoints.push(Math.max(adjustedMeterValue, 0));
 
-private createPath = (): string => {
-  const adjustedMeterValue = this.state.meter + 60;
-  this.dataPoints.push(Math.max(adjustedMeterValue, 0));
-
-  if (this.dataPoints.length > this.maxDataPoints) {
-    this.dataPoints.shift(); // 배열의 첫 번째 요소 제거
-  }
-
-
-  let path = "";
-  this.dataPoints.forEach((data, index) => {
-    const x = (screenWidth / 2) - (this.maxDataPoints - index - 1) * 10; // 데이터 포인트 간의 간격 조정
-    const y = 200 - (data * 200) / 100;
-    if (index === 0) {
-      path = `M${x},${y}`; // 첫 번째 데이터 포인트에서 경로 시작
-    } else {
-      path += ` L${x},${y}`; // 이후 데이터 포인트들로 선 그리기
+    if (this.dataPoints.length > this.maxDataPoints) {
+      this.dataPoints.shift(); // 배열의 첫 번째 요소 제거
     }
-  });
 
-  return path;
-};
+    let path = '';
+    this.dataPoints.forEach((data, index) => {
+      const x = screenWidth / 2 - (this.maxDataPoints - index - 1) * 10; // 데이터 포인트 간의 간격 조정
+      const y = 200 - (data * 200) / 100;
+      if (index === 0) {
+        path = `M${x},${y}`; // 첫 번째 데이터 포인트에서 경로 시작
+      } else {
+        path += ` L${x},${y}`; // 이후 데이터 포인트들로 선 그리기
+      }
+    });
 
+    return path;
+  };
 
   private onStatusPress = (e: any): void => {
     const touchX = e.nativeEvent.locationX;
@@ -303,4 +323,4 @@ private createPath = (): string => {
   };
 }
 
-export default PronounceTest;
+export default Game2;

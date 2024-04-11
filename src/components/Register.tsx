@@ -56,6 +56,7 @@ const Register: React.FC = () => {
 
       const responseData = await response.json();
       console.log('서버 응답:', responseData);
+      navigation.navigate('Login');
     } catch (error) {
       console.error('오류 발생:', error);
     }

@@ -1,6 +1,7 @@
-import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import React from 'react';
+import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import BackButton from '../button/backButton';
 
 type WordMainProps = {
   navigation: StackNavigationProp<RootStackParamList>;
@@ -8,68 +9,75 @@ type WordMainProps = {
 
 type RootStackParamList = {
   CreateVocabulary: undefined;
-  MyVocabulary: undefined;
+  MyVocabularyList: undefined;
+  DefaultVocabulary: undefined;
 };
 
-const WordMain: React.FC<WordMainProps> = ({ navigation }) => {
+const WordMain: React.FC<WordMainProps> = ({navigation}) => {
   return (
     <>
-    <View style={{backgroundColor: "#212A3E"}}>
-      <Text style={styles.titleTxt}>단어장</Text>
-      <View style={styles.line}></View>
-    </View>
+      <View style={{backgroundColor: '#212A3E'}}>
+        <View
+          style={{backgroundColor: '#212A3E', paddingBottom: 20, height: 40}}>
+          <BackButton />
+        </View>
 
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.box}
-        onPress={() => navigation.navigate("CreateVocabulary")}
-      >
-        <Text>단어장 만들기</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.box}
-        onPress={() => navigation.navigate("MyVocabulary")}
-      >
-        <Text>내 단어장 보기</Text>
-      </TouchableOpacity>
-
-      <View style={styles.box}>
-        <Text>JLPT 급수별 단어 보기</Text>
+        <Text style={styles.titleTxt}>단어장</Text>
+        <View style={styles.line}></View>
       </View>
-    </View>
 
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.box}
+          onPress={() => navigation.navigate('CreateVocabulary')}>
+          <Text style={styles.menuTxt}>단어장 만들기</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.box}
+          onPress={() => navigation.navigate('MyVocabularyList')}>
+          <Text style={styles.menuTxt}>내 단어장 보기</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.box}
+          onPress={() => navigation.navigate('DefaultVocabulary')}>
+          <Text style={styles.menuTxt}>JLPT 급수별 단어 보기</Text>
+        </TouchableOpacity>
+      </View>
     </>
-
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#212A3E",
-    alignItems: "center",
+    backgroundColor: '#212A3E',
+    alignItems: 'center',
   },
   titleTxt: {
-    color: "white",
+    color: 'white',
     fontSize: 15,
     margin: 10,
   },
   line: {
     borderBottomWidth: 1,
-    borderBottomColor: "white",
+    borderBottomColor: 'white',
     marginHorizontal: 10,
-    marginBottom:10,
+    marginBottom: 10,
   },
   box: {
     width: 350,
     height: 180,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     marginVertical: 10,
     borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  menuTxt: {
+    fontSize:20
+  }
 });
 
 export default WordMain;

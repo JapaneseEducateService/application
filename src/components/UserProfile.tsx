@@ -13,6 +13,7 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {TextInput} from 'react-native-gesture-handler';
 import DatePicker from '@react-native-community/datetimepicker';
 import LoadingBar from './LoadingBar';
+import BackButton from './button/backButton';
 
 type RootStackParamList = {
   Home: undefined;
@@ -48,11 +49,11 @@ const UserProfile: React.FC = () => {
             },
           },
         );
-          setCurrentUserData(serverResponse.data);
-          setEmail(serverResponse.data.email);
-          setNickname(serverResponse.data.nickname);
-          setPhone(serverResponse.data.phone);
-          setCurrentBirthDate(serverResponse.data.birthday);
+        setCurrentUserData(serverResponse.data);
+        setEmail(serverResponse.data.email);
+        setNickname(serverResponse.data.nickname);
+        setPhone(serverResponse.data.phone);
+        setCurrentBirthDate(serverResponse.data.birthday);
       }
     } catch (error) {
       console.error('서버 요청 에러:', error);
@@ -112,8 +113,8 @@ const UserProfile: React.FC = () => {
             },
           },
         );
-        Alert.alert("회원 정보 수정이 완료되었습니다.")
-        fetchData()
+        Alert.alert('회원 정보 수정이 완료되었습니다.');
+        fetchData();
       } catch (error) {
         console.error('회원 정보 수정 실패:', error);
       }
@@ -155,16 +156,46 @@ const UserProfile: React.FC = () => {
 
   return (
     <>
-      <View style={{backgroundColor: 'white', flex: 1}}>
+      <View style={{backgroundColor: '#212A3E', paddingBottom: 20, height: 40}}>
+        <BackButton />
+      </View>
+      <View style={{backgroundColor: '#212A3E'}}>
+        <BackButton />
+      </View>
+      <View style={{backgroundColor: '#f5f5f7', flex: 1}}>
+        <View
+          style={{
+            width: '100%',
+            height: '20%',
+            position: 'absolute',
+            backgroundColor: '#212A3E',
+          }}
+        />
+        <View
+          style={{
+            width: '100%',
+            height: '14%',
+            position: 'absolute',
+            bottom: '0%',
+            backgroundColor: '#212A3E',
+          }}
+        />
         {currentUserData ? (
           <>
             <View style={{alignItems: 'center'}}>
-              <Text style={{marginTop: 30}}>회원정보</Text>
+              <Text
+                style={{
+                  marginTop: 30,
+                  fontSize: 20,
+                  color: 'white',
+                }}>
+                회원정보
+              </Text>
               <View
                 style={{
                   width: 140,
                   height: 140,
-                  borderColor: 'black',
+                  borderColor: 'white',
                   borderWidth: 1,
                   borderRadius: 70,
                   marginTop: 10,
@@ -313,6 +344,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 30,
     justifyContent: 'center',
+    borderRadius: 10,
   },
   buttonText: {
     color: 'white',

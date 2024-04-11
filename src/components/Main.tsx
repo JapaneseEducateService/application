@@ -7,16 +7,17 @@ import {
   Animated,
   Dimensions,
   requireNativeComponent,
+  Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {Image} from 'react-native-svg';
 
 interface Item {
   itemId: 'PronounceTest' | 'WordMain' | 'Community' | 'Game';
   title: string;
   description: string;
   subDescription: string;
+  image: string;
 }
 
 type RootStackParamList = {
@@ -51,24 +52,28 @@ const Main: React.FC = () => {
       title: '발음 평가',
       description: '원하는 문장을 자유롭게',
       subDescription: 'AI를 사용한 발음 상세 교정',
+      image: require('../../assets/background.jpg'),
     },
     {
       itemId: 'WordMain',
       title: '단어장',
       description: '사진으로 편하고 빠르게',
       subDescription: 'OCR기술로 빠른 단어장 생성,',
+      image: require('../../assets/background2.jpg'),
     },
     {
       itemId: 'Community',
       title: '커뮤니티',
-      description: '설명1',
-      subDescription: '설명2',
+      description: '단어장의 공유',
+      subDescription: '유저들이 직접 만든 단어장을 다운',
+      image: require('../../assets/background4.jpeg'),
     },
     {
       itemId: 'Game',
       title: '게임',
       description: '일본어 학습을 재미있게',
-      subDescription: '내 단어장을 활용한 재미있는 게임들',
+      subDescription: '단어장을 활용한 재미있는 게임들',
+      image: require('../../assets/background3.jpg'),
     },
   ];
 
@@ -77,7 +82,7 @@ const Main: React.FC = () => {
     const listener = scrollX.addListener(({value}) => {
       const itemTotalWidth = boxWidth + 80; // 아이템 너비 + 양쪽 마진
       const index = Math.round(value / itemTotalWidth); // 현재 중앙에 위치한 아이템의 인덱스 계산
-      console.log('현재 가운데 있는 박스 인덱스: ', index);
+      // console.log('현재 가운데 있는 박스 인덱스: ', index
       setCurrentIndex(index);
     });
 
@@ -113,9 +118,6 @@ const Main: React.FC = () => {
       extrapolate: 'clamp', // inputRange 바깥의 값을 'clamp'로 제한
     });
 
-    // 현재 중앙에 있는 아이템의 인덱스와 현재 아이템의 인덱스 비교
-    const isCentered = index === currentIndex;
-
     // 아이템의 scale 변화를 위한 outputRange 정의
     const scale = scrollX.interpolate({
       inputRange,
@@ -133,9 +135,20 @@ const Main: React.FC = () => {
                 transform: [{scale}],
               },
             ]}>
+            <Image
+              source={item.image}
+              style={{
+                width: '100%',
+                height: '85%',
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                borderBottomLeftRadius: 15,
+                borderBottomRightRadius: 15,
+              }}
+            />
             <View
               style={{
-                height: '100%',
+                height: '15%',
                 width: '100%',
                 justifyContent: 'flex-end',
                 alignItems: 'center',
@@ -146,7 +159,13 @@ const Main: React.FC = () => {
         </TouchableOpacity>
 
         <Animated.View style={{opacity, alignItems: 'center'}}>
-          <Text style={{fontSize: 20, color: 'white', marginTop: 100,fontWeight:'bold'}}>
+          <Text
+            style={{
+              fontSize: 20,
+              color: 'white',
+              marginTop: 100,
+              fontWeight: 'bold',
+            }}>
             {item.description}
           </Text>
           <Text style={{fontSize: 15, color: 'white', marginTop: 10}}>
@@ -195,13 +214,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 40,
     borderRadius: 20,
-    backgroundColor:'#D5DBE8'
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: 'white',
   },
   buttonText: {
     fontSize: 13,
     fontWeight: 'bold',
     backgroundColor: 'white',
     width: '100%',
+    height: '100%',
     textAlign: 'center',
     justifyContent: 'center',
     borderBottomLeftRadius: 20,

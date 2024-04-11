@@ -5,17 +5,11 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#455A64',
+    backgroundColor: '#212A3E',
     flexDirection: 'column',
     alignItems: 'center',
   },
-  titleTxt: {
-    marginTop: 100,
-    color: 'white',
-    fontSize: 28,
-  },
   viewRecorder: {
-    marginTop: 40,
     width: '100%',
     alignItems: 'center',
   },
@@ -48,11 +42,12 @@ export const styles = StyleSheet.create({
   },
   playBtnWrapper: {
     flexDirection: 'row',
-    marginTop: 40,
   },
   btn: {
     borderColor: 'white',
-    borderWidth: 1,
+    width:50,
+    height:50,
+    margin:10,
   },
   txt: {
     color: 'white',
@@ -61,7 +56,6 @@ export const styles = StyleSheet.create({
     marginVertical: 4,
   },
   txtRecordCounter: {
-    marginTop: 32,
     color: 'white',
     fontSize: 20,
     textAlignVertical: 'center',

@@ -5,7 +5,7 @@ import {TouchableOpacity, View, Image} from 'react-native';
 import Main from './src/components/Main';
 import Login from './src/components/Login';
 import OcrTest from './src/components/OcrTest';
-import PronounceTest from './src/components/PronounceTest';
+import PronounceTest from './src/components/pronounce/PronounceTest';
 import Register from './src/components/Register';
 import WordMain from './src/components/word/WordMain';
 import Game from './src/components/Game';
@@ -14,9 +14,10 @@ import Community from './src/components/Community';
 import Home from './src/components/Home';
 import UserProfile from './src/components/UserProfile';
 import CreateVocabulary from './src/components/word/CreateVocabulary';
-import { HeaderBackButton } from 'react-navigation-stack';
-import MyVocabulary from './src/components/word/MyVocabulary';
+import {HeaderBackButton} from 'react-navigation-stack';
+import MyVocabularyList from './src/components/word/MyVocabularyList';
 import VocabularyInfo from './src/components/word/VocabularyInfo';
+import DefaultVocabulary from './src/screens/DefaultVocabulary';
 
 interface Props {}
 
@@ -44,8 +45,6 @@ const App: React.FC<Props> = () => {
         screenOptions={{
           headerTitleAlign: 'center',
         }}>
-          
-
         {/* 메인 화면 */}
         <Stack.Screen
           name="Main"
@@ -73,7 +72,11 @@ const App: React.FC<Props> = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen name="OcrTest" component={OcrTest} />
-        <Stack.Screen name="PronounceTest" component={PronounceTest} />
+        {/* 발음평가 화면 */}
+        <Stack.Screen
+          name="PronounceTest"
+          component={PronounceTest}
+          options={{headerShown: false}}></Stack.Screen>
         <Stack.Screen
           name="Register"
           component={Register}
@@ -83,48 +86,14 @@ const App: React.FC<Props> = () => {
         <Stack.Screen
           name="WordMain"
           component={WordMain}
-          options={({navigation}) => ({
-            headerTitle: LogoTitle,
-            headerTitleAlign: 'center',
-            headerRight: () => (
-              <View style={{marginRight: 10}}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('UserProfile')}>
-                  <Image
-                    source={require('./assets/userIcon.png')}
-                    style={{width: 40, height: 40}}
-                  />
-                </TouchableOpacity>
-              </View>
-            ),
-            headerLeft: () => (
-              <HeaderBackButton
-                onPress={() => navigation.goBack()}
-                tintColor={'black'}
-              />
-            ),
-          })}
+          options={{headerShown: false}}
         />
 
         {/* 단어장 만들기 화면 */}
         <Stack.Screen
           name="CreateVocabulary"
           component={CreateVocabulary}
-          options={({navigation}) => ({
-            headerTitle: LogoTitle,
-            headerTitleAlign: 'center',
-            headerRight: () => (
-              <View style={{marginRight: 10}}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('UserProfile')}>
-                  <Image
-                    source={require('./assets/userIcon.png')}
-                    style={{width: 40, height: 40}}
-                  />
-                </TouchableOpacity>
-              </View>
-            ),
-          })}
+          options={{headerShown: false}}
         />
 
         <Stack.Screen name="Game" component={Game} />
@@ -138,15 +107,20 @@ const App: React.FC<Props> = () => {
         <Stack.Screen
           name="UserProfile"
           component={UserProfile}
-          options={() => ({
-            headerTitle: LogoTitle,
-            headerTitleAlign: 'center',
-          })}
+          options={{headerShown: false}}
         />
-        <Stack.Screen name="MyVocabulary" component={MyVocabulary} />
-        <Stack.Screen name="VocabularyInfo" component={VocabularyInfo} />
+        <Stack.Screen
+          name="MyVocabularyList"
+          component={MyVocabularyList}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="VocabularyInfo"
+          component={VocabularyInfo}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="DefaultVocabulary" component={DefaultVocabulary} />
       </Stack.Navigator>
-      
     </NavigationContainer>
   );
 };

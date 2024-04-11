@@ -4,9 +4,10 @@ import {
   PermissionsAndroid,
   Platform,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -22,16 +23,16 @@ import type {
   PlayBackType,
   RecordBackType,
 } from 'react-native-audio-recorder-player';
-import Button from './Button.tsx';
 import type {ReactElement} from 'react';
 import {Svg, Path} from 'react-native-svg';
-import Icon from 'react-native-vector-icons/Ionicons'; // Ionicons 아이콘을 사용
+import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-import {getToken} from '../utils/AuthStorage.tsx';
-import CircleChart from './chart/CircleChart.tsx';
+import Button from '../Button';
+import CircleChart from './CircleChart';
+
 const screenWidth = Dimensions.get('screen').width;
 
-const Game = () => {
+const AudioWaveFormChart = ({referenceText}) => {
   const [recordSecs, setRecordSecs] = useState(0);
   const [recordTime, setRecordTime] = useState('00:00:00');
   const [currentPositionSec, setCurrentPositionSec] = useState(0);
@@ -41,7 +42,9 @@ const Game = () => {
   const [meter, setMeter] = useState(0); // 미터링 값 상태
   const [dataPoints, setDataPoints] = useState([]);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [currentText, setCurrentText] = useState<string>('');
+  const [currentText, setCurrentText] = useState<string>(''); // 사용자가 입력한 텍스트
+  const [isPlaying, setIsPlaying] = useState<boolean>(false); // 재생하고 있는 중인지
+  const [currentReferenceText, setCurrentReferenceText] = useState<string>('');
   const maxDataPoints = 20;
 
   const [pronounceData, setPronounceData] = useState();
@@ -64,6 +67,10 @@ const Game = () => {
   }, []);
 
   useEffect(() => {
+    console.log('파형 차트', referenceText); // recordTime 상태가 변경될 때마다 실행됩니다.
+  }, [referenceText]); // recordTime을 의존성 배열에 추가
+
+  useEffect(() => {
     console.log(recordTime); // recordTime 상태가 변경될 때마다 실행됩니다.
   }, [recordTime]); // recordTime을 의존성 배열에 추가
 
@@ -79,8 +86,17 @@ const Game = () => {
     console.log(pronounceData);
   }, [pronounceData]);
 
+  useEffect(() => {
+    setCurrentReferenceText(referenceText);
+    console.log('파형차트', currentReferenceText);
+  }, [referenceText]);
+
   // 녹음 시작 버튼
   const onStartRecord = React.useCallback(async () => {
+    // 다시 녹음할 시 그려져 있던 그래프 초기화
+    setDataPoints([]);
+    setIsPlaying(false);
+
     if (Platform.OS === 'android') {
       // 권한 요청
       try {
@@ -142,6 +158,8 @@ const Game = () => {
   }, []);
 
   const onStartPlay = React.useCallback(async () => {
+    setIsPlaying(true);
+
     console.log('onStartPlay', path);
 
     try {
@@ -170,7 +188,7 @@ const Game = () => {
 
   // 음성 파일 서버에 전송하는 부분
   const uploadFile = async (filePath: string, referenceText: string) => {
-    const access_token = '1|hIW36276skdMTfJgvOaluFuLlhaDlZicFUXF8vFX31df95ee';
+    const access_token = '1|gZMiLDXAOFZ3Gy1S8RBn9OCZoc7BSNhuK6qmzYbNee4131f8';
 
     try {
       // FormData 객체 생성
@@ -186,7 +204,7 @@ const Game = () => {
       });
 
       // 참조 텍스트를 FormData에 추가
-      formData.append('referenceText', referenceText);
+      formData.append('referenceText', currentReferenceText);
 
       // axios를 사용하여 파일과 참조 텍스트를 함께 전송
       let response = await axios.post(
@@ -201,9 +219,28 @@ const Game = () => {
       );
 
       console.log('발음 평가 성공');
+      console.log(response.data);
       setPronounceData(response.data.speechResult.result.NBest[0]);
     } catch (error) {
       console.error('Error uploading file:', error);
+
+      // 에러 응답이 존재하는 경우, 상태 코드와 함께 에러 메시지를 출력합니다.
+      if (error.response) {
+        console.error(`Error Status: ${error.response.status}`);
+        console.error(`Error Data: ${JSON.stringify(error.response.data)}`);
+        console.error(
+          `Error Headers: ${JSON.stringify(error.response.headers)}`,
+        );
+      } else if (error.request) {
+        // 요청은 이루어졌으나 응답을 받지 못한 경우
+        console.error(`Error Request: ${error.request}`);
+      } else {
+        // 요청 설정 시 발생한 오류
+        console.error('Error', error.message);
+      }
+
+      // 에러 설정 정보
+      console.error('Error config:', error.config);
     }
   };
 
@@ -229,24 +266,9 @@ const Game = () => {
 
   return (
     <SafeAreaView>
-      <View style={{width: '100%', flexDirection: 'row'}}>
-        {!isRecording ? (
-          <Button style={styles.btn} onPress={onStartRecord}>
-            <Icon name="mic" size={50} />
-          </Button>
-        ) : (
-          <Button style={styles.btn} onPress={onStopRecord}>
-            <Icon name="stop" size={50} />
-          </Button>
-        )}
-
-        <Button style={styles.btn} onPress={onStartPlay}>
-          <Icon name="caret-forward-outline" size={50} color={'white'}></Icon>
-        </Button>
-      </View>
       <View
         style={{
-          width: 380,
+          width: 350,
           borderWidth: 1,
           height: 110,
           borderColor: 'white',
@@ -260,6 +282,32 @@ const Game = () => {
           />
         </Svg>
       </View>
+
+      <View style={{width: '100%', flexDirection: 'row'}}>
+        {!isRecording ? (
+          <TouchableOpacity style={styles.btn} onPress={onStartRecord}>
+            <Icon name="mic" size={20} color={'black'} />
+            <Text>녹음하기</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.btn} onPress={onStopRecord}>
+            <Icon name="stop" size={20} color={'black'} />
+            <Text>저장하기</Text>
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity style={styles.btn} onPress={onStartPlay}>
+          <Icon name="caret-forward-outline" size={20} color={'black'}></Icon>
+          <Text>재생하기</Text>
+        </TouchableOpacity>
+
+        {!isPlaying ? (
+          <Text style={styles.timerTxt}>{recordTime}</Text>
+        ) : (
+          <Text style={styles.timerTxt}>{playTime}</Text>
+        )}
+      </View>
+
       <Button
         style={{
           width: 150,
@@ -274,13 +322,25 @@ const Game = () => {
         서버에 음성파일 전송
       </Button>
       {pronounceData && (
-        <Text style={{fontSize: 15, color: 'white'}}>
-          {`평가텍스트 : ${pronounceData.Display}\n`}
-          {`발음점수 : ${pronounceData.AccuracyScore}\n`}
-          {`완전성 : ${pronounceData.CompletenessScore}\n`}
-          {`신뢰도 : ${pronounceData.Confidence}\n`}
-          {`전반적인 발음 점수 : ${pronounceData.PronScore}`}
-        </Text>
+        <>
+          <Text style={{color: 'white'}}>평가텍스트 : {pronounceData.Display}</Text>
+          <View style={{flexDirection: 'row', width: '100%', borderWidth: 3}}>
+            <View style={{width: '30%', borderWidth: 3, alignItems: 'center'}}>
+              <CircleChart percent={pronounceData.AccuracyScore} />
+              <Text style={{color: 'white'}}>발음점수</Text>
+            </View>
+            <View style={{width: '30%', borderWidth: 3, alignItems: 'center'}}>
+              <CircleChart percent={pronounceData.CompletenessScore} />
+              <Text style={{color: 'white'}}>완전성</Text>
+            </View>
+            <View style={{width: '30%', borderWidth: 3, alignItems: 'center'}}>
+              <CircleChart percent={pronounceData.PronScore} />
+              <Text style={{color: 'white'}}>종합 발음 점수</Text>
+            </View>
+            
+          </View>
+          <Text style={{color: 'white'}}>피드백 : {pronounceData.Words[0].ErrorType}</Text>
+        </>
       )}
     </SafeAreaView>
   );
@@ -329,9 +389,12 @@ const styles = StyleSheet.create({
   },
   btn: {
     borderColor: 'white',
-    width:50,
-    height:50,
-    margin:10,
+    width: 80,
+    height: 25,
+    margin: 10,
+    flexDirection: 'row',
+    borderWidth: 1,
+    backgroundColor: 'pink',
   },
   txt: {
     color: 'white',
@@ -356,6 +419,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     letterSpacing: 3,
   },
+  timerTxt: {
+    color: 'white',
+    fontSize: 20,
+    margin: 10,
+    flexDirection: 'row',
+    marginLeft: 50,
+  },
 });
 
-export default Game;
+export default AudioWaveFormChart;

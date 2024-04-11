@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Button,
   Image,
@@ -7,10 +7,16 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import {launchImageLibrary, Asset} from 'react-native-image-picker';
 import {getToken} from '../utils/AuthStorage';
 import axios from 'axios';
+
+// Props 타입 정의에 onUpdate 추가
+interface Props {
+  onUpdate: (updatedVocabulary: any) => void; // tempVocabulary 대신 업데이트할 객체 형식 지정
+}
 
 const OcrTest: React.FC = () => {
   const [photo, setPhoto] = useState<Asset | null>(null);
@@ -19,6 +25,26 @@ const OcrTest: React.FC = () => {
     kanji: [],
     meaning: [],
   });
+
+  const handleChange = (
+    text: string,
+    index: number,
+    type: 'kanji' | 'gana' | 'meaning',
+  ) => {
+    const newOcrResult = {...ocrResult};
+    newOcrResult[type][index] = text;
+
+    // 상태를 업데이트합니다.
+    setOcrResult(newOcrResult);
+
+    // 변경된 ocrResult를 부모 컴포넌트에 전달합니다.
+    onUpdate(newOcrResult);
+  };
+
+  // ocrResult 상태가 변경될 때마다 콘솔에 로그를 출력합니다.
+  useEffect(() => {
+    console.log('OCR 결과가 업데이트되었습니다:', ocrResult);
+  }, [ocrResult]);
 
   // OCR 결과 문자열에서 JSON 데이터를 추출하고 파싱하는 함수
   const parseOcrResult = (ocrResultString: string) => {
@@ -83,11 +109,25 @@ const OcrTest: React.FC = () => {
           },
         );
 
-        console.log('타입은', typeof(response.data))
-        const parsedOcrResult = parseOcrResult(response.data);
-        console.log('OCR 결과:', parsedOcrResult);
+        // 이제 response.data가 객체 형태로, 직접 접근하여 사용합니다.
+        console.log('OCR 결과:', response.data);
 
-        setOcrResult(parsedOcrResult);
+        // 직접 접근한 결과를 상태에 저장합니다.
+        if (
+          response.data &&
+          response.data.kanji &&
+          response.data.gana &&
+          response.data.meaning
+        ) {
+          setOcrResult({
+            kanji: response.data.kanji,
+            gana: response.data.gana,
+            meaning: response.data.meaning,
+          });
+        } else {
+          // 예상치 못한 응답 구조일 경우 에러 처리
+          console.error('OCR 결과의 형식이 예상과 다릅니다.');
+        }
       } else {
         // access_token이 없다면 적절한 오류 처리를 합니다.
         console.error('access_token이 없습니다.');
@@ -117,21 +157,29 @@ const OcrTest: React.FC = () => {
 
       {ocrResult && (
         <View style={styles.container}>
-          {ocrResult.kanji.map((item: any, index: number) => {
-            // 가나, 한자, 뜻에서 같은 인덱스의 항목을 가져옵니다.
-            const gana = ocrResult.gana[index];
-            const kanji = ocrResult.kanji[index]; // kanji가 null일 수도 있으므로 이를 체크해야 합니다.
-            const meaning = ocrResult.meaning[index];
-
-            // 각 항목을 한 줄에 표시합니다.
-            return (
-              <View key={index} style={styles.line}>
-                <Text style={styles.text}>
-                  {kanji ? kanji : 'null'} - {gana} - {meaning}
-                </Text>
-              </View>
-            );
-          })}
+          {ocrResult && (
+            <View style={styles.container}>
+              {ocrResult.kanji.map((_, index: number) => (
+                <View key={index} style={styles.line}>
+                  <TextInput
+                    style={styles.input}
+                    value={ocrResult.kanji[index]}
+                    onChangeText={text => handleChange(text, index, 'kanji')}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    value={ocrResult.gana[index]}
+                    onChangeText={text => handleChange(text, index, 'gana')}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    value={ocrResult.meaning[index]}
+                    onChangeText={text => handleChange(text, index, 'meaning')}
+                  />
+                </View>
+              ))}
+            </View>
+          )}
         </View>
       )}
     </ScrollView>
@@ -161,11 +209,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
   },
-  line: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    padding: 10,
-  },
   text: {
     marginLeft: 10,
     color: 'white',
@@ -176,6 +219,18 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     margin: 10,
+  },
+  line: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  input: {
+    width: '30%',
+    borderWidth: 1,
+    borderColor: 'gray',
+    margin: 5,
+    backgroundColor: 'white',
   },
 });
 
