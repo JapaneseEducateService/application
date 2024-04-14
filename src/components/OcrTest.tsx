@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Button,
   Image,
   View,
   Text,
@@ -12,19 +11,42 @@ import {
 import {launchImageLibrary, Asset} from 'react-native-image-picker';
 import {getToken} from '../utils/AuthStorage';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 // Props 타입 정의에 onUpdate 추가
 interface Props {
   onUpdate: (updatedVocabulary: any) => void; // tempVocabulary 대신 업데이트할 객체 형식 지정
 }
 
-const OcrTest: React.FC = () => {
+const OcrTest: React.FC<Props> = ({onUpdate}) => {
   const [photo, setPhoto] = useState<Asset | null>(null);
   const [ocrResult, setOcrResult] = useState<any>({
     gana: [],
     kanji: [],
     meaning: [],
   });
+
+  const handleRemoveItem = (index: number) => {
+    const newKanji = [...ocrResult.kanji];
+    const newGana = [...ocrResult.gana];
+    const newMeaning = [...ocrResult.meaning];
+
+    newKanji.splice(index, 1);
+    newGana.splice(index, 1);
+    newMeaning.splice(index, 1);
+
+    setOcrResult({
+      kanji: newKanji,
+      gana: newGana,
+      meaning: newMeaning,
+    });
+
+    onUpdate({
+      kanji: newKanji,
+      gana: newGana,
+      meaning: newMeaning,
+    });
+  };
 
   const handleChange = (
     text: string,
@@ -34,34 +56,14 @@ const OcrTest: React.FC = () => {
     const newOcrResult = {...ocrResult};
     newOcrResult[type][index] = text;
 
-    // 상태를 업데이트합니다.
     setOcrResult(newOcrResult);
 
-    // 변경된 ocrResult를 부모 컴포넌트에 전달합니다.
     onUpdate(newOcrResult);
   };
 
-  // ocrResult 상태가 변경될 때마다 콘솔에 로그를 출력합니다.
   useEffect(() => {
     console.log('OCR 결과가 업데이트되었습니다:', ocrResult);
   }, [ocrResult]);
-
-  // OCR 결과 문자열에서 JSON 데이터를 추출하고 파싱하는 함수
-  const parseOcrResult = (ocrResultString: string) => {
-    // OCR 결과 중 JSON 형식의 데이터를 찾아내기 위한 정규 표현식
-    const jsonRegex = /{.*}/;
-    // 정규 표현식을 사용하여 JSON 문자열 추출
-    const jsonString = ocrResultString.match(jsonRegex)![0];
-    // JSON 문자열을 객체로 파싱
-    const parsedData = JSON.parse(jsonString);
-
-    // 필요한 데이터를 반환
-    return {
-      kanji: parsedData.kanji,
-      gana: parsedData.gana,
-      meaning: parsedData.meaning,
-    };
-  };
 
   const selectPhotoTapped = () => {
     const options = {
@@ -176,6 +178,15 @@ const OcrTest: React.FC = () => {
                     value={ocrResult.meaning[index]}
                     onChangeText={text => handleChange(text, index, 'meaning')}
                   />
+                  <View style={{justifyContent: 'center'}}>
+                    <TouchableOpacity onPress={() => handleRemoveItem(index)}>
+                      <Icon
+                        name="trash-bin-outline"
+                        size={25}
+                        color={'white'}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               ))}
             </View>
@@ -208,6 +219,9 @@ const styles = StyleSheet.create({
   },
   container: {
     marginTop: 20,
+    width: '95%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
     marginLeft: 10,

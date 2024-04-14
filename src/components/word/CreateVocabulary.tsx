@@ -49,16 +49,15 @@ const WordMain: React.FC<WordMainProps> = ({navigation}) => {
   });
 
   // OCR 결과 업데이트 핸들러
-const handleUpdate = (updatedOCRResult) => {
-  setTempVocabulary(prevVocabulary => ({
-    ...prevVocabulary,
-    title: currentTitle, // 현재 제목 유지
-    kanji: updatedOCRResult.kanji,
-    gana: updatedOCRResult.gana,
-    meaning: updatedOCRResult.meaning,
-  }));
-};
-
+  const handleUpdate = updatedOCRResult => {
+    setTempVocabulary(prevVocabulary => ({
+      ...prevVocabulary,
+      title: currentTitle, // 현재 제목 유지
+      kanji: updatedOCRResult.kanji,
+      gana: updatedOCRResult.gana,
+      meaning: updatedOCRResult.meaning,
+    }));
+  };
 
   useEffect(() => {
     console.log(tempVocabulary);
@@ -100,7 +99,17 @@ const handleUpdate = (updatedOCRResult) => {
 
   // OCR로 생성한 단어장 저장하는 로직
   const setVocabularyToOcr = () => {
-    
+
+    // OCR로 만든 단어장에 null값을 전부 채웠는지 확인
+    const containsNull = ['gana', 'kanji', 'meaning'].some(key =>
+      tempVocabulary[key].some(element => element === null || element === ""),
+    );
+    if(containsNull){
+      return console.log("빈 칸을 전부 채워주세요")
+    }
+
+    setWord()
+
   };
 
   // 단어 하나씩 임시 저장하는 로직
@@ -349,7 +358,9 @@ const handleUpdate = (updatedOCRResult) => {
             {tempVocabulary.kanji && tempVocabulary.kanji.length > 0 && (
               <View>
                 {tempVocabulary.kanji.map((kanji, index) => (
-                  <View key={index} style={{marginBottom: 10, flexDirection:'row'}}>
+                  <View
+                    key={index}
+                    style={{marginBottom: 10, flexDirection: 'row'}}>
                     <Text style={{color: '#000'}}>{kanji}&ensp;</Text>
                     <Text style={{color: '#000'}}>
                       {tempVocabulary.gana[index]}&ensp;

@@ -29,6 +29,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import Button from '../Button';
 import CircleChart from './CircleChart';
+import {getToken} from '../../utils/AuthStorage';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -127,7 +128,7 @@ const AudioWaveFormChart = ({referenceText}) => {
     // 오디오 인코딩 및 소스 관련 설정
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-      AudioSourceAndroid: AudioSourceAndroidType.MIC,
+      AudioSourceAndroid: AudioSourceAndroidType.VOICE_RECOGNITION,
       AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
       AVNumberOfChannelsKeyIOS: 2,
       AVFormatIDKeyIOS: AVEncodingOption.aac,
@@ -188,7 +189,8 @@ const AudioWaveFormChart = ({referenceText}) => {
 
   // 음성 파일 서버에 전송하는 부분
   const uploadFile = async (filePath: string, referenceText: string) => {
-    const access_token = '1|gZMiLDXAOFZ3Gy1S8RBn9OCZoc7BSNhuK6qmzYbNee4131f8';
+    const tokenData = await getToken();
+    const accessToken = tokenData?.access_token;
 
     try {
       // FormData 객체 생성
@@ -212,14 +214,13 @@ const AudioWaveFormChart = ({referenceText}) => {
         formData,
         {
           headers: {
-            Authorization: `Bearer ${access_token}`,
+            Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'multipart/form-data',
           },
         },
       );
 
       console.log('발음 평가 성공');
-      console.log(response.data);
       setPronounceData(response.data.speechResult.result.NBest[0]);
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -323,7 +324,9 @@ const AudioWaveFormChart = ({referenceText}) => {
       </Button>
       {pronounceData && (
         <>
-          <Text style={{color: 'white'}}>평가텍스트 : {pronounceData.Display}</Text>
+          <Text style={{color: 'white'}}>
+            평가텍스트 : {pronounceData.Display}
+          </Text>
           <View style={{flexDirection: 'row', width: '100%', borderWidth: 3}}>
             <View style={{width: '30%', borderWidth: 3, alignItems: 'center'}}>
               <CircleChart percent={pronounceData.AccuracyScore} />
@@ -337,9 +340,10 @@ const AudioWaveFormChart = ({referenceText}) => {
               <CircleChart percent={pronounceData.PronScore} />
               <Text style={{color: 'white'}}>종합 발음 점수</Text>
             </View>
-            
           </View>
-          <Text style={{color: 'white'}}>피드백 : {pronounceData.Words[0].ErrorType}</Text>
+          <Text style={{color: 'white'}}>
+            피드백 : {pronounceData.Words[0].ErrorType}
+          </Text>
         </>
       )}
     </SafeAreaView>

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
 } from 'react-native';
+import {getToken} from '../../utils/AuthStorage';
 
 interface Props {
   onJapTextChange: (japText: string) => void;
@@ -18,25 +19,24 @@ const KorJapInputBox: React.FC<Props> = ({onJapTextChange}) => {
   const [currentKorText, setCurrentKorText] = useState<string>('');
   const [currentJapText, setCurrentJapText] = useState<string>('');
 
-  const access_token = '1|gZMiLDXAOFZ3Gy1S8RBn9OCZoc7BSNhuK6qmzYbNee4131f8';
-
   // useEffect(()=>{
   //   console.log(currentJapText)
   // },[currentJapText])
 
-  const KoreanToJapanese = () => {
+  const KoreanToJapanese = async () => {
+    const tokenData = await getToken();
+    const accessToken = tokenData?.access_token;
     const data = {
       text: currentKorText,
-    }
+    };
 
     axios
-      .post('http://10.0.2.2:8000/api/speech/translate', data,
-      {
+      .post('http://10.0.2.2:8000/api/speech/translate', data, {
         headers: {
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data',
         },
-      },)
+      })
       .then(response => {
         if (response.status === 200) {
           console.log(response.data);
@@ -50,7 +50,7 @@ const KorJapInputBox: React.FC<Props> = ({onJapTextChange}) => {
       .catch(error => {
         console.error('에러 발생:', error);
       });
-  }
+  };
 
   return (
     <View style={styles.outerContainer}>
@@ -84,7 +84,7 @@ const KorJapInputBox: React.FC<Props> = ({onJapTextChange}) => {
             placeholder="평가를 원하는 한국어 텍스트"
             onChangeText={text => {
               setCurrentKorText(text);
-              console.log("한국어 텍스트(자식)", currentKorText)
+              console.log('한국어 텍스트(자식)', currentKorText);
             }}
           />
           <TouchableOpacity style={styles.btn} onPress={KoreanToJapanese}>
