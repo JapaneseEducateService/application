@@ -23,6 +23,7 @@ const AccessTokenToServer = async (accessToken: string, navigation:any, provider
       await getToken();
 
       console.log("서버에서 발급 받은 엑세스 토큰 : ", serverResponse.data.access_token);
+      console.log("서버에서 발급 받은 리프레쉬 토큰 : ", serverResponse.data.refresh_token);
 
       navigation.navigate('Main');
     }

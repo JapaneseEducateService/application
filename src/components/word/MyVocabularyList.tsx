@@ -7,6 +7,7 @@ import {useNavigation, NavigationProp} from '@react-navigation/native';
 import LoadingBar from '../LoadingBar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BackButton from '../button/backButton';
+import api from '../../api';
 
 type RootStackParamList = {
   CreateVocabulary: undefined;
@@ -21,17 +22,7 @@ const MyVocabularyList: React.FC = () => {
   useEffect(() => {
     const fetchVocabulary = async () => {
       try {
-        const {access_token} = await getToken();
-        const response = await axios.get(
-          'http://10.0.2.2:8000/api/vocabularyNote',
-          {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-              'Content-Type': 'application/json',
-            },
-          },
-        );
-
+        const response = await api.get('/vocabularyNote');  // api 모듈 사용
         if (response.status === 200) {
           setVocabularyList(response.data.notes); // 상태 업데이트
         } else {
@@ -44,7 +35,6 @@ const MyVocabularyList: React.FC = () => {
 
     fetchVocabulary();
   }, []);
-
   return (
     <>
       <View
