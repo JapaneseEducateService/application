@@ -1,0 +1,12 @@
+{
+  "message": "발음 평가가 완료되었습니다.",
+  "speechResult": {
+    "pitchComparisonResult": {
+      "error": "Error opening <FileStorage: 'hello_adjusted.wav' ('audio/x-wav')>: Format not recognised."
+    },
+    "pronunciationAssessmentResult": {
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    }
+  },
+  "status": "Success"
+}
