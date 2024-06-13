@@ -47,7 +47,7 @@ const Login: React.FC<Props> = () => {
     console.log('입력한 유저 데이터 : ', userData);
 
     axios
-      .post('http://10.0.2.2:8000/api/login', userData)
+      .post('http://tamago-laravel-rb-474417567.ap-northeast-2.elb.amazonaws.com/api/login', userData)
       .then(response => {
         if (response.status === 200) {
           // 로그인이 성공하면 입력창을다시 초기화 시켜줘야 함

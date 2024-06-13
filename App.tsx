@@ -9,7 +9,7 @@ import PronounceTest from './src/components/pronounce/PronounceTest';
 import Register from './src/components/Register';
 import WordMain from './src/components/word/WordMain';
 import Game from './src/components/Game';
-import Community from './src/components/Community';
+import CommunityMain from './src/screens/community/CommunityMain';
 
 import Home from './src/components/Home';
 import UserProfile from './src/components/UserProfile';
@@ -18,6 +18,7 @@ import {HeaderBackButton} from 'react-navigation-stack';
 import MyVocabularyList from './src/components/word/MyVocabularyList';
 import VocabularyInfo from './src/components/word/VocabularyInfo';
 import DefaultVocabulary from './src/screens/DefaultVocabulary';
+import SentenceMain from './src/screens/sentence/SentenceMain';
 
 interface Props {}
 
@@ -76,7 +77,7 @@ const App: React.FC<Props> = () => {
         <Stack.Screen
           name="PronounceTest"
           component={PronounceTest}
-          options={{headerShown: false}}></Stack.Screen>
+          options={{headerShown: false}}/>
         <Stack.Screen
           name="Register"
           component={Register}
@@ -97,7 +98,11 @@ const App: React.FC<Props> = () => {
         />
 
         <Stack.Screen name="Game" component={Game} />
-        <Stack.Screen name="Community" component={Community} />
+        <Stack.Screen
+          name="CommunityMain"
+          component={CommunityMain}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="Home"
           component={Home}
@@ -120,6 +125,11 @@ const App: React.FC<Props> = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen name="DefaultVocabulary" component={DefaultVocabulary} />
+        <Stack.Screen
+          name="SentenceMain"
+          component={SentenceMain}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,15 +1,17 @@
 import axios from 'axios';
 import { getToken, storeToken } from './AuthStorage';
+import api from '../api';
 
 const AccessTokenToServer = async (accessToken: string, navigation:any, provider: string) => {
   try {
-    const serverResponse = await axios.get(
-      `http://10.0.2.2:8000/api/social/mobile/${provider}`,
+    const serverResponse = await api.get(
+      `/social/mobile/${provider}`,
       {
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json',
+          Accept: 'application/json',   
           Authorization: 'Bearer ' + accessToken,
+          skipToken: true // 로그인 할 때는 토큰이 없는 상황이니 스킵
         },
       },
     );

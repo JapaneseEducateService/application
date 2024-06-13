@@ -13,7 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 interface Item {
-  itemId: 'PronounceTest' | 'WordMain' | 'Community' | 'Game';
+  itemId: 'PronounceTest' | 'WordMain' | 'CommunityMain' | 'Game';
   title: string;
   description: string;
   subDescription: string;
@@ -23,7 +23,7 @@ interface Item {
 type RootStackParamList = {
   PronounceTest: undefined;
   WordMain: undefined;
-  Community: undefined;
+  CommunityMain: undefined;
   Game: undefined;
 };
 
@@ -62,7 +62,7 @@ const Main: React.FC = () => {
       image: require('../../assets/background2.jpg'),
     },
     {
-      itemId: 'Community',
+      itemId: 'CommunityMain',
       title: '커뮤니티',
       description: '단어장의 공유',
       subDescription: '유저들이 직접 만든 단어장을 다운',

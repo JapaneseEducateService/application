@@ -41,6 +41,8 @@ const GoogleSignInButton = () => {
 
       const accessToken = json.access_token;
 
+      console.log("구글에서 받아온 토큰 : ", accessToken)
+
       // 서버에 액세스 토큰 전달
       AccessTokenToServer(accessToken, navigation, provider);
     } catch (error) {

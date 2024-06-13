@@ -46,7 +46,9 @@ const SentenceMain: React.FC = () => {
 
   return (
     <>
+    <View style={{zIndex:99}}>
       <BackButton />
+      </View>
       <View style={styles.container}>
         <Text style={styles.title}>문장노트 만들기</Text>
         <TextInput

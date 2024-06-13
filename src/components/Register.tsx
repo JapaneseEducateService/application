@@ -42,7 +42,7 @@ const Register: React.FC = () => {
     };
 
     try {
-      const response = await fetch('http://10.0.2.2:8000/api/register', {
+      const response = await fetch('http://tamago-laravel-rb-474417567.ap-northeast-2.elb.amazonaws.com/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

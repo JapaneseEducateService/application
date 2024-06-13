@@ -2,20 +2,21 @@ import axios from 'axios';
 import { getToken, storeToken } from './utils/AuthStorage';
 
 const api = axios.create({
-  baseURL: 'http://10.0.2.2:8000/api',
+  baseURL: 'http://tamago-laravel-rb-474417567.ap-northeast-2.elb.amazonaws.com:80/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 // 요청 인터셉터
+// 토큰이 필요없는 요청은 헤더에 { skipToken: true } 값을 추가할 것
 api.interceptors.request.use(
   async config => {
-
-    const tokens = await getToken();
-    
-    if (tokens && tokens.access_token) {
-      config.headers['Authorization'] = `Bearer ${tokens.access_token}`;
+    if (!config.headers.skipToken) {
+      const tokens = await getToken();
+      if (tokens && tokens.access_token) {
+        config.headers['Authorization'] = `Bearer ${tokens.access_token}`;
+      }
     }
     return config;
   },
@@ -23,6 +24,7 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 
 // 응답 인터셉터
 api.interceptors.response.use(

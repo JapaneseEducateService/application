@@ -12,14 +12,18 @@ import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.flipper.ReactNativeFlipper
 import com.facebook.soloader.SoLoader
 
+import com.reactnativepractice.PitchModulePackage
+
+
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost =
       object : DefaultReactNativeHost(this) {
         override fun getPackages(): List<ReactPackage> {
-          // Packages that cannot be autolinked yet can be added manually here, for example:
-          // packages.add(new MyReactNativePackage());
-          return PackageList(this).packages
+          val packages = PackageList(this).packages // 기존에 자동 연결된 패키지 목록을 불러옵니다.
+          // 사용자 정의 패키지 추가하기
+          packages.add(PitchModulePackage())
+          return packages
         }
 
         override fun getJSMainModuleName(): String = "index"

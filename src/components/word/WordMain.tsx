@@ -10,7 +10,7 @@ type WordMainProps = {
 type RootStackParamList = {
   CreateVocabulary: undefined;
   MyVocabularyList: undefined;
-  DefaultVocabulary: undefined;
+  SentenceMain: undefined;
 };
 
 const WordMain: React.FC<WordMainProps> = ({navigation}) => {
@@ -35,15 +35,16 @@ const WordMain: React.FC<WordMainProps> = ({navigation}) => {
 
         <TouchableOpacity
           style={styles.box}
-          onPress={() => navigation.navigate('MyVocabularyList')}>
-          <Text style={styles.menuTxt}>내 단어장 보기</Text>
+          onPress={() => navigation.navigate('SentenceMain')}>
+          <Text style={styles.menuTxt}>문장 노트 만들기</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.box}
-          onPress={() => navigation.navigate('DefaultVocabulary')}>
-          <Text style={styles.menuTxt}>JLPT 급수별 단어 보기</Text>
+          onPress={() => navigation.navigate('MyVocabularyList')}>
+          <Text style={styles.menuTxt}>내 단어장 보기</Text>
         </TouchableOpacity>
+
       </View>
     </>
   );

@@ -11,8 +11,8 @@ const AnimatedSvgText = Animated.createAnimatedComponent(SvgText); // Text 컴�
 
 const CircleChart: React.FC<Props> = ({percent}) => {
   console.log(percent)
-  const size = 100; // 원형 차트 크기
-  const strokeWidth = 20; // 선 두께
+  const size = 60; // 원형 차트 크기
+  const strokeWidth = 10; // 선 두께
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
 
@@ -32,7 +32,7 @@ const CircleChart: React.FC<Props> = ({percent}) => {
   }, [percent, animation]); // animation 대신 percent를 의존성 배열에 추가합니다.
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container}> 
       <Svg width={size} height={size}>
         <Circle
           stroke="white"
@@ -43,7 +43,7 @@ const CircleChart: React.FC<Props> = ({percent}) => {
           strokeWidth={strokeWidth}
         />
         <AnimatedCircle
-          stroke="red"
+          stroke="#2E64FE"
           fill="none"
           cx={size / 2}
           cy={size / 2}
@@ -55,13 +55,13 @@ const CircleChart: React.FC<Props> = ({percent}) => {
         />
         {/* 여기에 텍스트를 추가합니다 */}
         <SvgText
-          fill="white" // 텍스트 색상
-          fontSize="20" // 텍스트 크기
+          fill="black" // 텍스트 색상
+          fontSize="15" // 텍스트 크기
           x={size / 2} // 텍스트의 x 좌표 (원의 중심)
           y={size / 2 + 10} // 텍스트의 y 좌표 (원의 중심에서 약간 아래로 조정)
           textAnchor="middle" // 텍스트 정렬을 중앙으로 설정
         >
-          {`${percent}%`}
+          {`${percent}점`}
         </SvgText>
       </Svg>
     </View>
