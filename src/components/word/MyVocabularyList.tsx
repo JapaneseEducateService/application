@@ -17,14 +17,26 @@ type RootStackParamList = {
 const MyVocabularyList: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [vocabularyList, setVocabularyList] = useState([]);
+  const [adminVocabularyList, setAdminVocabularyList] = useState([]);
 
-  // User 단어장 리스트 불러오기
+  // User + Admin 단어장 리스트 불러오기
   useEffect(() => {
     const fetchVocabulary = async () => {
       try {
-        const response = await api.get('/vocabularyNote');  // api 모듈 사용
+        const response = await api.get('/vocabularyNote');
         if (response.status === 200) {
-          setVocabularyList(response.data.notes); // 상태 업데이트
+          // Admin 단어장에서 id와 title만 뽑아서 저장하기
+          const adminVocabularyTitle = response.data.adminNotes.map(note => ({
+            id: note.id,
+            title: note.title,
+          }));
+          // User 단어장에서 id와 title만 뽑아서 저장하기
+          const userVocabularyTitle = response.data.notes.map(note => ({
+            id: note.id,
+            title: note.title,
+          }));
+          setAdminVocabularyList(adminVocabularyTitle);
+          setVocabularyList(userVocabularyTitle); // 상태 업데이트
         } else {
           console.error('단어장 리스트 가져오기 실패');
         }
@@ -35,11 +47,12 @@ const MyVocabularyList: React.FC = () => {
 
     fetchVocabulary();
   }, []);
+
   return (
     <>
       <View
         style={{
-          backgroundColor: '#212A3E',
+          backgroundColor: '#006fff',
           height: 60,
         }}>
         <BackButton />
@@ -53,9 +66,9 @@ const MyVocabularyList: React.FC = () => {
           <Text style={styles.txt}>내 단어장 리스트</Text>
         </View>
       </View>
-      <ScrollView style={{flex: 1, backgroundColor: '#212A3E'}}>
-      
-        {vocabularyList ? (
+      <ScrollView style={{flex: 1, backgroundColor: 'white', minHeight: 300}}>
+      <Text style={{margin:5, fontSize:15, fontWeight:'bold', color:'black'}}>유저 단어장</Text>
+        {vocabularyList || adminVocabularyList ? (
           <>
             <View style={styles.container}>
               {vocabularyList.map(note => (
@@ -69,7 +82,24 @@ const MyVocabularyList: React.FC = () => {
                 </TouchableOpacity>
               ))}
             </View>
-            
+
+            <View style={{width: '100%', alignItems: 'center'}}>
+              <View style={{width: '95%', borderWidth: 1, margin:10, borderColor:'#B4A2D4'}} />
+            </View>
+            <Text style={{margin:5, fontSize:15, fontWeight:'bold', color:'black'}}>기본 단어장</Text>
+
+            <View style={styles.container}>
+              {adminVocabularyList.map(note => (
+                <TouchableOpacity
+                  key={note.id}
+                  style={styles.noteContainer}
+                  onPress={() =>
+                    navigation.navigate('VocabularyInfo', {id: note.id})
+                  }>
+                  <Text style={styles.noteTitle}>{note.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </>
         ) : (
           <LoadingBar />
@@ -85,11 +115,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   noteContainer: {
-    marginVertical: 8,
+    marginTop: 8,
     padding: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
     borderRadius: 8,
     width: '90%',
+    borderWidth: 2,
+    borderColor: '#B4A2D4',
+    elevation: 5,
   },
   noteTitle: {
     fontSize: 16,

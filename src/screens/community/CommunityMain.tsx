@@ -33,7 +33,9 @@ const CommunityMain: React.FC<Props> = () => {
 
   return (
     <>
-      <BackButton />
+      <View style={{zIndex:999}}>
+        <BackButton />
+      </View>
       <View
         style={{
           width: '100%',

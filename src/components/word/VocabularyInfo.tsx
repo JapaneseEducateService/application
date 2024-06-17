@@ -18,6 +18,7 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import Tts from 'react-native-tts';
+import api from '../../api';
 
 type RootStackParamList = {
   VocabularyInfo: {id: string};
@@ -82,8 +83,8 @@ const VocabularyInfo: React.FC = () => {
         const accessToken = tokenData?.access_token;
 
         const {id} = route.params;
-        const response = await axios.get(
-          `http://10.0.2.2:8000/api/vocabularyNote/${id}`,
+        const response = await api.get(
+          `/vocabularyNote/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -832,7 +833,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     backgroundColor: '#212A3E',
-    borderWidth: 3,
+    // borderWidth: 3,
     alignItems: 'center',
   },
   txt: {

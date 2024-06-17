@@ -63,14 +63,14 @@ const Main: React.FC = () => {
     },
     {
       itemId: 'CommunityMain',
-      title: '커뮤니티',
+      title: '단어 창고',
       description: '단어장의 공유',
       subDescription: '유저들이 직접 만든 단어장을 다운',
       image: require('../../assets/background4.jpeg'),
     },
     {
       itemId: 'Game',
-      title: '게임',
+      title: '문법',
       description: '일본어 학습을 재미있게',
       subDescription: '단어장을 활용한 재미있는 게임들',
       image: require('../../assets/background3.jpg'),
