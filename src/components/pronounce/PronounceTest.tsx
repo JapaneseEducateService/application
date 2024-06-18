@@ -85,7 +85,7 @@ const PronounceTest: React.FC = () => {
         },
       });
 
-      console.log(response);
+      console.log("발음 평가 결과 응답", response);
 
       console.log('발음 평가 성공');
       setPronounceData(response.data.speechResult);
@@ -116,7 +116,7 @@ const PronounceTest: React.FC = () => {
 
       if (response.status === 200) {
         // 받은 데이터를 base64 문자열로 인코딩
-        console.log(response.data);
+        console.log("응답TTS데이터", response.data);
         const base64Audio = Buffer.from(response.data).toString('base64');
         console.log('Base64 Audio Data:', base64Audio.substring(0, 100)); // 첫 100자만 로그로 출력
 
@@ -154,7 +154,7 @@ const PronounceTest: React.FC = () => {
 
     try {
       const msg = await audioRecorderPlayer.startPlayer(TTSPath);
-      const volume = await audioRecorderPlayer.setVolume(1.0);
+      const volume = await audioRecorderPlayer.setVolume(5.0);
       console.log(`경로: ${msg}`, `볼륨: ${volume}`);
 
       audioRecorderPlayer.addPlayBackListener(e => {
@@ -170,15 +170,12 @@ const PronounceTest: React.FC = () => {
   }, []);
   // 네이티브 모듈을 이용해서 TTS와 사용자 음성파일의 피치 비교를 하는 함수
   const pitchTest = (filePath: string) => {
+    console.log("파일경로 : ", filePath);
     PitchModule.analyzePitch(filePath)
       .then(pitchValue => {
         console.log('Pitch detected:', pitchValue);
-        console.log('Data type of pitchValue:', Array.isArray(pitchValue));
-        console.log('First element of pitchValue:', pitchValue[0]);
-
         const filteredPitchData = pitchValue.filter(item => item.pitch < 1000);
-
-        // 경로에 따라 다른 상태에 저장
+  
         if (
           filePath ===
           'file:////data/user/0/com.reactnativepractice/cache/UserAudio.wav'
@@ -195,9 +192,8 @@ const PronounceTest: React.FC = () => {
       .catch(error => {
         console.log('Error detecting pitch:', error);
       });
-
-    // uploadFile(filePath, referenceText);
   };
+  
 
   useEffect(() => {
     console.log(
@@ -231,12 +227,12 @@ const PronounceTest: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(recordTime);
+    console.log("레코드타임:", recordTime);
   }, [recordTime]);
   playTime;
 
   useEffect(() => {
-    console.log(playTime);
+    console.log("플레이타임", playTime);
   }, [playTime]);
 
   useEffect(() => {

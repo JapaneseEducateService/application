@@ -13,7 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
 interface Item {
-  itemId: 'PronounceTest' | 'WordMain' | 'CommunityMain' | 'Game';
+  itemId: 'PronounceTest' | 'WordMain' | 'CommunityMain' | 'Grammar';
   title: string;
   description: string;
   subDescription: string;
@@ -56,10 +56,17 @@ const Main: React.FC = () => {
     },
     {
       itemId: 'WordMain',
-      title: '단어장',
+      title: '단어장 / 문장노트',
       description: '사진으로 편하고 빠르게',
       subDescription: 'OCR기술로 빠른 단어장 생성,',
       image: require('../../assets/background2.jpg'),
+    },
+    {
+      itemId: 'Grammar',
+      title: '문법',
+      description: '올바른 문법 학습',
+      subDescription: '문법퀴즈를 통한 학습',
+      image: require('../../assets/background3.jpg'),
     },
     {
       itemId: 'CommunityMain',
@@ -67,13 +74,6 @@ const Main: React.FC = () => {
       description: '단어장의 공유',
       subDescription: '유저들이 직접 만든 단어장을 다운',
       image: require('../../assets/background4.jpeg'),
-    },
-    {
-      itemId: 'Game',
-      title: '문법',
-      description: '일본어 학습을 재미있게',
-      subDescription: '단어장을 활용한 재미있는 게임들',
-      image: require('../../assets/background3.jpg'),
     },
   ];
 

@@ -8,7 +8,7 @@ import OcrTest from './src/components/OcrTest';
 import PronounceTest from './src/components/pronounce/PronounceTest';
 import Register from './src/components/Register';
 import WordMain from './src/components/word/WordMain';
-import Game from './src/components/Game';
+import Grammar from './src/components/Grammar';
 import CommunityMain from './src/screens/community/CommunityMain';
 
 import Home from './src/components/Home';
@@ -19,6 +19,7 @@ import MyVocabularyList from './src/components/word/MyVocabularyList';
 import VocabularyInfo from './src/components/word/VocabularyInfo';
 import DefaultVocabulary from './src/screens/DefaultVocabulary';
 import SentenceMain from './src/screens/sentence/SentenceMain';
+import GrammarTest from './src/components/GrammarTest';
 
 interface Props {}
 
@@ -77,7 +78,8 @@ const App: React.FC<Props> = () => {
         <Stack.Screen
           name="PronounceTest"
           component={PronounceTest}
-          options={{headerShown: false}}/>
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="Register"
           component={Register}
@@ -97,7 +99,11 @@ const App: React.FC<Props> = () => {
           options={{headerShown: false}}
         />
 
-        <Stack.Screen name="Game" component={Game} />
+        <Stack.Screen
+          name="Grammar"
+          component={Grammar}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="CommunityMain"
           component={CommunityMain}
@@ -128,6 +134,12 @@ const App: React.FC<Props> = () => {
         <Stack.Screen
           name="SentenceMain"
           component={SentenceMain}
+          options={{headerShown: false}}
+        />
+        {/* 단어시험 */}
+        <Stack.Screen
+          name="GrammarTest"
+          component={GrammarTest}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

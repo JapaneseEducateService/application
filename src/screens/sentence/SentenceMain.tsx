@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import BackButton from '../../components/button/backButton';
 import {
   Button,
@@ -10,9 +10,24 @@ import {
   ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import api from '../../api';
 
 const SentenceMain: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null); // ScrollView의 ref를 만듭니다.
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // 데이터 가져오기
+  const fetchData = async () => {
+    try {
+      const response = await api.get('/sentenceNotes/lists');
+      console.log('받아온 문장노트 목록', response.data[0]);
+    } catch (error) {
+      console.error('서버 요청 에러:', error);
+    }
+  };
 
   // 유저가 입력한 문장 데이터 (기본 4개)
   const [sentenceData, setSentenceData] = useState([
@@ -46,8 +61,8 @@ const SentenceMain: React.FC = () => {
 
   return (
     <>
-    <View style={{zIndex:99}}>
-      <BackButton />
+      <View style={{zIndex: 99}}>
+        <BackButton />
       </View>
       <View style={styles.container}>
         <Text style={styles.title}>문장노트 만들기</Text>
@@ -152,7 +167,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     backgroundColor: 'white',
-    height: '100%'
+    height: '100%',
   },
   sentenceScrollView: {
     width: '95%',

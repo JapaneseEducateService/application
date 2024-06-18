@@ -1,6 +1,8 @@
 package com.reactnativepractice;
 
 import android.net.Uri;
+import android.util.Log;
+import android.content.Context;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -10,19 +12,22 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.io.UniversalAudioInputStream;
+import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.PitchProcessor;
-import android.util.Log;
 
 public class PitchModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
+    private static final String TAG = "PitchModule";
 
     public PitchModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -37,14 +42,30 @@ public class PitchModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void analyzePitch(String filePath, Promise promise) {
         try {
+            // 파일 경로에서 Uri 생성
             Uri fileUri = Uri.parse(filePath);
+
+            // 파일 경로 로그 출력
+            Log.d(TAG, "Received file path: " + filePath);
+            Log.d(TAG, "File URI path: " + fileUri.getPath());
+
+            // 파일 경로를 절대 경로로 변환
+            File audioFile = new File(fileUri.getPath());
+            if (!audioFile.exists()) {
+                promise.reject("FILE_NOT_FOUND", "File not found or could not be opened.");
+                return;
+            }
+
+            Log.d(TAG, "Absolute file path: " + audioFile.getAbsolutePath());
+
             ArrayList<WritableMap> pitchData = new ArrayList<>();
 
+            // AudioDispatcherFactory를 사용하여 AudioDispatcher 생성
             AudioDispatcher dispatcher = AudioDispatcherFactory.fromPipe(
                     reactContext, // Context
                     fileUri, // Uri
                     0.0, // double, 처리 시작 시간 (초)
-                    30, // double, 처리할 최대 길이 (초)
+                    30.0, // double, 처리할 최대 길이 (초)
                     44100, // int, 샘플 레이트
                     2048, // int, 버퍼 크기
                     1024 // int, 버퍼 겹침
@@ -81,6 +102,7 @@ public class PitchModule extends ReactContextBaseJavaModule {
                 promise.reject("NO_PITCH_DETECTED", "No pitch detected");
             }
         } catch (Exception e) {
+            Log.e(TAG, "Error analyzing pitch", e);
             promise.reject("ERROR", "Failed to analyze pitch: " + e.getMessage());
         }
     }
