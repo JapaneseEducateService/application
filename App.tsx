@@ -19,7 +19,10 @@ import MyVocabularyList from './src/components/word/MyVocabularyList';
 import VocabularyInfo from './src/components/word/VocabularyInfo';
 import DefaultVocabulary from './src/screens/DefaultVocabulary';
 import SentenceMain from './src/screens/sentence/SentenceMain';
+import SentenceList from './src/screens/sentence/SentenceList';
 import GrammarTest from './src/components/GrammarTest';
+import SentenceInfo from './src/screens/sentence/SentenceInfo';
+
 
 interface Props {}
 
@@ -140,6 +143,18 @@ const App: React.FC<Props> = () => {
         <Stack.Screen
           name="GrammarTest"
           component={GrammarTest}
+          options={{headerShown: false}}
+        />
+        {/* 문장노트 리스트 */}
+        <Stack.Screen
+          name="SentenceList"
+          component={SentenceList}
+          options={{headerShown: false}}
+        />
+        {/* 문장노트 상세정보 */}
+        <Stack.Screen
+          name="SentenceInfo"
+          component={SentenceInfo}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

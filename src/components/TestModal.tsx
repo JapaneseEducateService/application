@@ -5,7 +5,7 @@ const TestModal = ({ visible, onClose, onStartTest }) => {
   const [selectedLevel, setSelectedLevel] = useState('N1');
 
   return (
-    <Modal visible={visible} transparent={true} animationType="slide">
+    <Modal visible={visible} transparent={true} animationType="fade">
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>테스트하기</Text>

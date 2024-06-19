@@ -3,6 +3,9 @@ package com.reactnativepractice;
 import android.net.Uri;
 import android.util.Log;
 import android.content.Context;
+import android.media.MediaPlayer; // 추가
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -12,8 +15,13 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
 
+import com.arthenica.ffmpegkit.FFmpegKit;
+import com.arthenica.ffmpegkit.ReturnCode;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.io.FileInputStream; // 추가
+import java.io.FileOutputStream; // 추가
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
@@ -41,16 +49,13 @@ public class PitchModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void analyzePitch(String filePath, Promise promise) {
+        AudioDispatcher dispatcher = null;
         try {
-            // 파일 경로에서 Uri 생성
-            Uri fileUri = Uri.parse(filePath);
-
             // 파일 경로 로그 출력
             Log.d(TAG, "Received file path: " + filePath);
-            Log.d(TAG, "File URI path: " + fileUri.getPath());
 
             // 파일 경로를 절대 경로로 변환
-            File audioFile = new File(fileUri.getPath());
+            File audioFile = new File(filePath);
             if (!audioFile.exists()) {
                 promise.reject("FILE_NOT_FOUND", "File not found or could not be opened.");
                 return;
@@ -61,14 +66,14 @@ public class PitchModule extends ReactContextBaseJavaModule {
             ArrayList<WritableMap> pitchData = new ArrayList<>();
 
             // AudioDispatcherFactory를 사용하여 AudioDispatcher 생성
-            AudioDispatcher dispatcher = AudioDispatcherFactory.fromPipe(
+            dispatcher = AudioDispatcherFactory.fromPipe(
                     reactContext, // Context
-                    fileUri, // Uri
-                    0.0, // double, 처리 시작 시간 (초)
-                    30.0, // double, 처리할 최대 길이 (초)
-                    44100, // int, 샘플 레이트
-                    2048, // int, 버퍼 크기
-                    1024 // int, 버퍼 겹침
+                    Uri.fromFile(audioFile), // Uri
+                    0.0, // 처리 시작 시간 (초)
+                    30.0, // 처리할 최대 길이 (초)
+                    44100, // 샘플 레이트
+                    2048, // 버퍼 크기
+                    1024 // 버퍼 겹침
             );
 
             dispatcher.addAudioProcessor(new PitchProcessor(
@@ -104,6 +109,46 @@ public class PitchModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             Log.e(TAG, "Error analyzing pitch", e);
             promise.reject("ERROR", "Failed to analyze pitch: " + e.getMessage());
+        } finally {
+            if (dispatcher != null) {
+                dispatcher.stop();
+            }
         }
     }
+
+    @ReactMethod
+    public void amplifyAudioVolume(String filePath, double amplification, Promise promise) {
+        try {
+            String inputPath = Uri.parse(filePath).getPath();
+            File inputFile = new File(inputPath);
+            File tempFile = new File(inputFile.getParent(), "AmplifiedUserAudio.wav");
+
+            if (!inputFile.exists()) {
+                promise.reject("FILE_NOT_FOUND", "Input file does not exist.");
+                return;
+            }
+
+            // Using FFmpeg to amplify the audio
+            String command = String.format("-y -i %s -filter:a volume=%f %s",
+                    inputPath, amplification, tempFile.getAbsolutePath());
+
+            FFmpegKit.executeAsync(command, session -> {
+                if (ReturnCode.isSuccess(session.getReturnCode())) {
+                    // Amplified file이 원본 파일을 덮어쓰도록 설정
+                    if (inputFile.delete() && tempFile.renameTo(inputFile)) {
+                        promise.resolve(inputFile.getAbsolutePath());
+                    } else {
+                        promise.reject("FILE_OPERATION_FAILED", "Failed to replace original file with amplified file.");
+                    }
+                } else {
+                    promise.reject("AMPLIFICATION_FAILED",
+                            "FFmpeg process failed with return code " + session.getReturnCode());
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Audio volume amplification failed.", e);
+            promise.reject("ERROR", "Audio volume amplification failed.");
+        }
+    }
+
 }

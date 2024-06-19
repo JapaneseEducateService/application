@@ -83,15 +83,13 @@ const VocabularyInfo: React.FC = () => {
         const accessToken = tokenData?.access_token;
 
         const {id} = route.params;
-        const response = await api.get(
-          `/vocabularyNote/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              'Content-Type': 'application/json',
-            },
+        const response = await api.get(`/vocabularyNote/${id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
           },
-        );
+        });
+        console.log('받아온 데이터', response.data);
 
         if (response.status === 200) {
           const parsedDetail = {...response.data.note};
@@ -200,8 +198,8 @@ const VocabularyInfo: React.FC = () => {
 
   // 새로운 단어 추가하는 로직
   const addVocabulary = async () => {
-    if (newKanji==="" || newGana==="" || newMeaning===""){
-      return console.log("빈칸 있음") 
+    if (newKanji === '' || newGana === '' || newMeaning === '') {
+      return console.log('빈칸 있음');
     }
     setVocabularyModalVisible(!vocabularyModalVisible);
 
@@ -214,16 +212,12 @@ const VocabularyInfo: React.FC = () => {
       const accessToken = tokenData?.access_token;
 
       const {id} = route.params;
-      const response = await axios.patch(
-        `http://10.0.2.2:8000/api/vocabularyNote/${id}`,
-        detail,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
+      const response = await axios.patch(`/vocabularyNote/${id}`, detail, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
         },
-      );
+      });
 
       if (response.status === 200) {
         console.log('새로운 단어 생성 성공');
@@ -247,11 +241,12 @@ const VocabularyInfo: React.FC = () => {
     setCurrentGana(data.gana);
     setCurrentMeaning(data.meaning);
     setCurrentIndex(data.key);
-    setChangeModalVisible(true)
+    setChangeModalVisible(true);
   };
 
   // 단어 수정 모달 창에서 저장버튼을 눌렀을 때
-  const changeVocabulary = async () => {  // async 키워드 추가
+  const changeVocabulary = async () => {
+    // async 키워드 추가
     // 올바른 배열 요소 접근 방식
     detail.kanji[currentIndex] = currentKanji;
     detail.gana[currentIndex] = currentGana;
@@ -263,30 +258,25 @@ const VocabularyInfo: React.FC = () => {
       const accessToken = tokenData?.access_token;
 
       const {id} = route.params;
-      const response = await axios.patch(
-        `http://10.0.2.2:8000/api/vocabularyNote/${id}`,
-        detail,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await axios.patch(`/vocabularyNote/${id}`, detail, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (response.status === 200) {
-        console.log('단어 수정 성공');  // 메시지가 '단어 삭제 성공'에서 '단어 수정 성공'으로 변경
+        console.log('단어 수정 성공'); // 메시지가 '단어 삭제 성공'에서 '단어 수정 성공'으로 변경
         setRefresh(!refresh); // 상태 업데이트를 위해 refresh 상태 토글
       } else {
-        console.error('단어장 수정 실패');  // 메시지가 '단어장 삭제 실패'에서 '단어장 수정 실패'로 변경
+        console.error('단어장 수정 실패'); // 메시지가 '단어장 삭제 실패'에서 '단어장 수정 실패'로 변경
       }
     } catch (error) {
       console.error('서버 통신 중 에러 발생:', error);
     }
 
     setChangeModalVisible(false);
-};
-
+  };
 
   // 단어장에서 단어 한개 삭제하는 로직
   const deleteVocabulary = async (data: any) => {
@@ -303,16 +293,12 @@ const VocabularyInfo: React.FC = () => {
       const accessToken = tokenData?.access_token;
 
       const {id} = route.params;
-      const response = await axios.patch(
-        `http://10.0.2.2:8000/api/vocabularyNote/${id}`,
-        detail,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
+      const response = await api.patch(`/vocabularyNote/${id}`, detail, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
         },
-      );
+      });
 
       if (response.status === 200) {
         console.log('단어 삭제 성공');
@@ -328,19 +314,12 @@ const VocabularyInfo: React.FC = () => {
   // 단어장 삭제하는 로직
   const deleteAllVocabulary = async () => {
     try {
-      const tokenData = await getToken();
-      const accessToken = tokenData?.access_token;
-
       const {id} = route.params;
-      const response = await axios.delete(
-        `http://10.0.2.2:8000/api/vocabularyNote/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
+      const response = await api.delete(`/vocabularyNote/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+      });
 
       if (response.status === 200) {
         console.log(response.data);
@@ -746,7 +725,6 @@ const VocabularyInfo: React.FC = () => {
                         height: '90%',
                         borderWidth: 2,
                         marginLeft: 10,
-                        
                       }}
                       value={currentGana}
                       onChangeText={text => setCurrentGana(text)}

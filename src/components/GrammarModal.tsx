@@ -1,13 +1,24 @@
 import React from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  Modal,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 
-const GrammarModal = ({ visible, onClose, grammar }) => {
+const GrammarModal = ({visible, onClose, grammar}) => {
   return (
-    <Modal visible={visible} transparent={true} animationType="slide">
+    <Modal visible={visible} transparent={true} animationType="fade">
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>{grammar.grammar}</Text>
           <ScrollView style={styles.contentContainer}>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>의미</Text>
+              <Text style={styles.sectionText}>{grammar.meaning}</Text>
+            </View>
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>설명</Text>
               <Text style={styles.sectionText}>{grammar.explain}</Text>
@@ -15,10 +26,6 @@ const GrammarModal = ({ visible, onClose, grammar }) => {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>접속 방법</Text>
               <Text style={styles.sectionText}>{grammar.conjunction}</Text>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>의미</Text>
-              <Text style={styles.sectionText}>{grammar.meaning}</Text>
             </View>
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>예문</Text>
@@ -44,13 +51,14 @@ const GrammarModal = ({ visible, onClose, grammar }) => {
 
 const styles = StyleSheet.create({
   modalContainer: {
-    flex: 1,
+    flex:1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
     width: '80%',
+    height:'80%',
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
@@ -60,7 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    marginTop:10
+    marginTop: 10,
   },
   contentContainer: {
     width: '100%',
@@ -92,7 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#006fff',
     borderRadius: 5,
     alignSelf: 'center',
-    marginBottom:20
+    marginBottom: 20,
   },
   closeButtonText: {
     color: 'white',

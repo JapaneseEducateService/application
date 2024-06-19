@@ -134,12 +134,15 @@ const Grammar: React.FC = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   backButtonContainer: {
-    zIndex: 99,
+    zIndex: 999,
   },
   headerContainer: {
     backgroundColor: '#006fff',
     alignItems: 'center',
     paddingBottom: 20,
+    borderBottomLeftRadius:15,
+    borderBottomRightRadius:15,
+    elevation:15
   },
   listContainer: {
     flex: 1,

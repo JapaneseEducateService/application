@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Button,
   NativeModules,
@@ -50,12 +50,11 @@ const PronounceTest: React.FC = () => {
     console.log('녹음된 데이터', pronounceData);
   }, [pronounceData]);
 
-  const filePath =
-    'file:////data/user/0/com.reactnativepractice/cache/UserAudio.wav';
+  const filePath = `${RNFetchBlob.fs.dirs.CacheDir}/UserAudio.wav`;
 
   // 음성 파일 서버에 전송하는 함수
   const uploadFile = async (filePath: string, referenceText: string) => {
-    console.log(filePath, referenceText);
+    console.log("서버전송 사용자 음성 경로 + 기준 텍스트", filePath, referenceText);
 
     try {
       // FormData 객체 생성
@@ -64,8 +63,10 @@ const PronounceTest: React.FC = () => {
       // rn-fetch-blob을 사용하여 파일의 실제 데이터를 포함시키기
       // 여기서는 filePath를 직접 사용합니다. 'file://' 접두사가 필요할 수 있습니다.
       let filename = filePath.split('/').pop(); // 파일 경로에서 파일 이름 추출
+      const fileUri = `file://${filePath}`;
+      console.log("폼데이터에 추가하는 파일패스", fileUri, "파일 이름", filename);
       formData.append('audio', {
-        uri: filePath,
+        uri: fileUri,
         type: 'audio/wav', // MIME 타입 지정
         name: filename, // 파일 이름 지정
       });
@@ -75,9 +76,6 @@ const PronounceTest: React.FC = () => {
 
       console.log(formData);
 
-      const tokenData = await getToken();
-      const accessToken = tokenData?.access_token;
-
       // axios를 사용하여 파일과 참조 텍스트를 함께 전송
       let response = await api.post('/speech', formData, {
         headers: {
@@ -85,7 +83,7 @@ const PronounceTest: React.FC = () => {
         },
       });
 
-      console.log("발음 평가 결과 응답", response);
+      console.log('발음 평가 결과 응답', response);
 
       console.log('발음 평가 성공');
       setPronounceData(response.data.speechResult);
@@ -103,7 +101,6 @@ const PronounceTest: React.FC = () => {
       const url = '/speech/tts';
       const data = JSON.stringify({referenceText: referenceText});
 
-      // Axios 요청에서 responseType을 'arraybuffer'로 설정
       const response = await api({
         method: 'post',
         url: url,
@@ -111,37 +108,34 @@ const PronounceTest: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        responseType: 'arraybuffer', // 응답 타입을 arraybuffer로 변경
+        responseType: 'arraybuffer',
       });
 
       if (response.status === 200) {
-        // 받은 데이터를 base64 문자열로 인코딩
-        console.log("응답TTS데이터", response.data);
+        console.log('응답TTS데이터', response.data);
         const base64Audio = Buffer.from(response.data).toString('base64');
-        console.log('Base64 Audio Data:', base64Audio.substring(0, 100)); // 첫 100자만 로그로 출력
+        console.log('Base64 Audio Data:', base64Audio.substring(0, 100));
 
-        // 파일로 저장
         try {
           const TTSpath = `${RNFS.CachesDirectoryPath}/TTSAudio.wav`;
-          const result = await RNFS.writeFile(TTSpath, base64Audio, 'base64');
-          console.log('File written:', result); // 결과 로깅
+          await RNFS.writeFile(TTSpath, base64Audio, 'base64');
+          console.log('File written:', TTSpath);
+          const fileExists = await RNFS.exists(TTSpath);
+          console.log('File exists at:', TTSpath, fileExists);
+
+          pitchTest(TTSpath);
+          onStartTTSPlay();
         } catch (error) {
           console.error('Error writing file:', error);
         }
-
-        // TTS 피치 분석
-        pitchTest(
-          'file:////data/user/0/com.reactnativepractice/cache/TTSAudio.wav',
-        );
-
-        // TTS 음성파일 재생
-        onStartTTSPlay();
       }
     } catch (error) {
       console.error('TTS 생성이나 저장 실패:', error);
     }
   };
+
   // 저장된 TTS 음성파일을 재생하는 함수
+  // TTS 음성파일 재생하는 함수 수정
   const onStartTTSPlay = React.useCallback(async () => {
     audioRecorderPlayer.stopPlayer();
     audioRecorderPlayer.removePlayBackListener();
@@ -168,6 +162,7 @@ const PronounceTest: React.FC = () => {
       console.log('TTSstartPlayer error', err);
     }
   }, []);
+
   // 네이티브 모듈을 이용해서 TTS와 사용자 음성파일의 피치 비교를 하는 함수
   const pitchTest = (filePath: string) => {
     console.log("파일경로 : ", filePath);
@@ -176,17 +171,18 @@ const PronounceTest: React.FC = () => {
         console.log('Pitch detected:', pitchValue);
         const filteredPitchData = pitchValue.filter(item => item.pitch < 1000);
   
-        if (
-          filePath ===
-          'file:////data/user/0/com.reactnativepractice/cache/UserAudio.wav'
-        ) {
+        const userAudioPath = `${RNFetchBlob.fs.dirs.CacheDir}/UserAudio.wav`;
+        console.log("유저 음성 경로111", userAudioPath)
+        const ttsAudioPath = `${RNFetchBlob.fs.dirs.CacheDir}/TTSAudio.wav`;
+        console.log("TTS 음성 경로111", ttsAudioPath)
+  
+        if (filePath === userAudioPath) {
           setPitchData(filteredPitchData);
           uploadFile(filePath, referenceText);
-        } else if (
-          filePath ===
-          'file:////data/user/0/com.reactnativepractice/cache/TTSAudio.wav'
-        ) {
+        } else if (filePath === ttsAudioPath) {
           setTTSPitchData(filteredPitchData);
+        } else {
+          console.log("이상한경로포착", filePath);
         }
       })
       .catch(error => {
@@ -194,6 +190,17 @@ const PronounceTest: React.FC = () => {
       });
   };
   
+
+  const fileExists = async filePath => {
+    try {
+      const exists = await RNFS.exists(filePath);
+      console.log(`File exists at ${filePath}: ${exists}`);
+      return exists;
+    } catch (error) {
+      console.error(`Error checking file existence at ${filePath}: ${error}`);
+      return false;
+    }
+  };
 
   useEffect(() => {
     console.log(
@@ -227,12 +234,12 @@ const PronounceTest: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log("레코드타임:", recordTime);
+    console.log('레코드타임:', recordTime);
   }, [recordTime]);
   playTime;
 
   useEffect(() => {
-    console.log("플레이타임", playTime);
+    console.log('플레이타임', playTime);
   }, [playTime]);
 
   useEffect(() => {
@@ -297,14 +304,25 @@ const PronounceTest: React.FC = () => {
 
   const newPath = `${dirs.CacheDir}/UserAudio.wav`;
 
-  // 유저 목소리 녹음을 종료하고 저장하는 함수
+  // 녹음 중지 및 증폭된 오디오 파일 업로드 함수
   const onStopRecord = React.useCallback(async () => {
     setIsRecording(false);
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
     setRecordSecs(0);
     console.log(result, '에 저장되었습니다.');
+    amplifyVolume(result);
   }, []);
+
+  const amplifyVolume = async filePath => {
+    try {
+      const result = await PitchModule.amplifyAudioVolume(filePath, 5.0); // 증폭 비율 .0
+      console.log('Amplified file saved at: ', result);
+      // pitchTest(result);
+    } catch (error) {
+      console.error('Amplification failed:', error);
+    }
+  };
 
   // 유저 목소리를 재생하는 함수
   const onStartPlay = React.useCallback(async () => {
@@ -427,7 +445,7 @@ const PronounceTest: React.FC = () => {
           <TouchableOpacity
             onPress={() =>
               pitchTest(
-                'file:////data/user/0/com.reactnativepractice/cache/UserAudio.wav',
+                '/data/user/0/com.reactnativepractice/cache/UserAudio.wav',
               )
             }
             style={styles.evaluateButton}>
@@ -471,26 +489,43 @@ const PronounceTest: React.FC = () => {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   marginTop: 10,
-                  marginBottom:10,
+                  marginBottom: 10,
                 }}>
                 <View style={{width: '20%', alignItems: 'center'}}>
-                  <CircleChart percent={pronounceData.pronunciationAssessmentResult.AccuracyScore} />
+                  <CircleChart
+                    percent={
+                      Math.round(pronounceData.pronunciationAssessmentResult.AccuracyScore)
+                    }
+                  />
                   <Text style={{color: '#006fff'}}>발음점수</Text>
                 </View>
                 <View style={{width: '20%', alignItems: 'center'}}>
-                  <CircleChart percent={pronounceData.pronunciationAssessmentResult.CompletenessScore} />
+                  <CircleChart
+                    percent={
+                      Math.round(pronounceData.pronunciationAssessmentResult
+                        .CompletenessScore)
+                    }
+                  />
                   <Text style={{color: '#006fff'}}>완전성</Text>
                 </View>
                 <View style={{width: '20%', alignItems: 'center'}}>
-                  <CircleChart percent={pronounceData.pronunciationAssessmentResult.FluencyScore} />
+                  <CircleChart
+                    percent={
+                      Math.round(pronounceData.pronunciationAssessmentResult.FluencyScore)
+                    }
+                  />
                   <Text style={{color: '#006fff'}}>유창성</Text>
                 </View>
                 <View style={{width: '20%', alignItems: 'center'}}>
-                  <CircleChart percent={pronounceData.pronunciationAssessmentResult.PronScore} />
+                  <CircleChart
+                    percent={
+                      Math.round(pronounceData.pronunciationAssessmentResult.PronScore)
+                    }
+                  />
                   <Text style={{color: '#006fff'}}>종합 점수</Text>
                 </View>
                 <View style={{width: '20%', alignItems: 'center'}}>
-                  <CircleChart percent={60} />
+                  <CircleChart percent={Math.round(pronounceData.pitchComparisonResult)} />
                   <Text style={{color: '#006fff'}}>피치 점수</Text>
                 </View>
               </View>
@@ -499,7 +534,7 @@ const PronounceTest: React.FC = () => {
                 {/* 잘못된 발음 표시하기 */}
                 {pronounceData?.pronunciationAssessmentResult?.Words.map(
                   (item, index) => (
-                    <View
+                    <View 
                       key={index}
                       style={{
                         width: '95%',
@@ -510,7 +545,7 @@ const PronounceTest: React.FC = () => {
                         justifyContent: 'space-between',
                         flexDirection: 'row',
                         borderColor: 'grey',
-                        elevation: 2, 
+                        elevation: 2,
                       }}>
                       <View
                         style={{
@@ -588,6 +623,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 140,
     position: 'absolute',
+    
   },
   mainContainer: {
     flex: 1,

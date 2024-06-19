@@ -8,27 +8,21 @@ import {
   View,
   StyleSheet,
   ScrollView,
+  Alert,
+  Modal,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import api from '../../api';
+import {launchImageLibrary, Asset} from 'react-native-image-picker';
+import {useNavigation} from '@react-navigation/native';
 
 const SentenceMain: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null); // ScrollView의 ref를 만듭니다.
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // 데이터 가져오기
-  const fetchData = async () => {
-    try {
-      const response = await api.get('/sentenceNotes/lists');
-      console.log('받아온 문장노트 목록', response.data[0]);
-    } catch (error) {
-      console.error('서버 요청 에러:', error);
-    }
-  };
-
+  const [title, setTitle] = useState(''); // 제목
+  const [modalVisible, setModalVisible] = useState(false); // 모달 상태
   // 유저가 입력한 문장 데이터 (기본 4개)
   const [sentenceData, setSentenceData] = useState([
     {id: 1, sentence: '', meaning: ''},
@@ -36,6 +30,81 @@ const SentenceMain: React.FC = () => {
     {id: 3, sentence: '', meaning: ''},
     {id: 4, sentence: '', meaning: ''},
   ]);
+
+  const [photo, setPhoto] = useState<Asset | null>(null);
+
+  const situation = '일상'; // 상황은 하드코딩
+
+  useEffect(() => {
+    console.log('입력한 제목', title);
+  }, [title]);
+
+  useEffect(() => {
+    console.log('입력한 정보', sentenceData);
+  }, [sentenceData]);
+
+  // 사진 선택하기
+  const selectPhotoTapped = () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+      maxWidth: 1000,
+      maxHeight: 1000,
+      includeBase64: true,
+    };
+
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.assets && response.assets.length > 0) {
+        setPhoto(response.assets[0]);
+        setModalVisible(true); // 사진 선택 시 모달을 띄웁니다.
+      } else {
+        console.log('No assets selected');
+      }
+    });
+  };
+
+  // 사진 서버에 전송해서 OCR 결과 저장하는 함수
+  const handleOcr = async () => {
+    const imageUri = photo?.uri;
+
+    const imageData = new FormData();
+    imageData.append('image', {
+      uri: imageUri,
+      name: 'image.jpg',
+      type: 'image/jpeg',
+    });
+
+    try {
+      const response = await api.post('/sentenceNotes/image', imageData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 200) {
+        console.log('OCR 결과:', response.data);
+
+        // OCR 결과를 sentenceData에 저장
+        const ocrResults = response.data.map((item: any, index: number) => ({
+          id: index + 1,
+          sentence: item.문장,
+          meaning: item.의미,
+        }));
+
+        setSentenceData(ocrResults); // 기존 데이터를 지우고 새로운 OCR 결과로 대체
+        setModalVisible(false); // OCR 처리 후 모달 닫기
+
+        // ScrollView를 스크롤 가능한 최대 위치로 스크롤
+        setTimeout(() => {
+          scrollViewRef.current?.scrollToEnd();
+        }, 100);
+      }
+    } catch (error) {
+      console.error('OCR 처리 중 오류 발생:', error);
+    }
+  };
 
   // 문장 입력 항목 추가 함수
   const addItem = () => {
@@ -59,6 +128,54 @@ const SentenceMain: React.FC = () => {
     setSentenceData(updatedDataWithIds);
   };
 
+  // 입력된 값을 업데이트하는 함수
+  const handleInputChange = (index: number, field: string, value: string) => {
+    const updatedData = sentenceData.map((item, idx) => {
+      if (idx === index) {
+        return {...item, [field]: value};
+      }
+      return item;
+    });
+    setSentenceData(updatedData);
+  };
+
+  // 서버에 데이터 전송하는 함수
+  const saveData = async () => {
+    if (title.trim() === '') {
+      Alert.alert('오류', '제목을 입력해주세요.');
+      return;
+    }
+
+    for (const item of sentenceData) {
+      if (item.sentence.trim() === '' || item.meaning.trim() === '') {
+        Alert.alert('오류', '모든 문장과 의미를 입력해주세요.');
+        return;
+      }
+    }
+    const formattedData = {
+      title,
+      sentences: sentenceData.map(item => ({
+        문장: item.sentence,
+        의미: item.meaning,
+      })),
+      situation,
+    };
+
+    try {
+      const response = await api.post('/sentenceNotes/make', formattedData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status == 200) {
+        navigation.goBack();
+      }
+    } catch (error) {
+      console.error('데이터 전송 중 오류 발생:', error);
+    }
+  };
+
   return (
     <>
       <View style={{zIndex: 99}}>
@@ -70,13 +187,14 @@ const SentenceMain: React.FC = () => {
           style={styles.input}
           placeholder="단어장의 제목을 입력해주세요"
           placeholderTextColor={'white'}
+          onChangeText={text => setTitle(text)}
         />
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>Excel로 문장 입력</Text>
           </TouchableOpacity>
           <View style={styles.buttonSpacer} />
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={selectPhotoTapped}>
             <Text style={styles.buttonText}>OCR로 문장 입력</Text>
           </TouchableOpacity>
         </View>
@@ -97,14 +215,20 @@ const SentenceMain: React.FC = () => {
               <View style={styles.sentenceBox}>
                 <TextInput
                   style={styles.sentenceTextInput}
-                  placeholder="문장을 입력해주세요">
-                  {item.sentence}
-                </TextInput>
+                  placeholder="문장을 입력해주세요"
+                  value={item.sentence}
+                  onChangeText={text =>
+                    handleInputChange(index, 'sentence', text)
+                  }
+                />
                 <TextInput
                   style={styles.sentenceTextInput}
-                  placeholder="뜻을 입력해주세요">
-                  {item.meaning}
-                </TextInput>
+                  placeholder="뜻을 입력해주세요"
+                  value={item.meaning}
+                  onChangeText={text =>
+                    handleInputChange(index, 'meaning', text)
+                  }
+                />
               </View>
             </View>
           ))}
@@ -117,11 +241,39 @@ const SentenceMain: React.FC = () => {
 
           <View style={{width: 20}}></View>
 
-          <TouchableOpacity onPress={addItem} style={styles.settingButton}>
+          <TouchableOpacity onPress={saveData} style={styles.settingButton}>
             <Text style={styles.settingButtonTxt}>저장하기</Text>
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* OCR 선택 모달 창 */}
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            {photo && (
+              <Image source={{uri: photo.uri}} style={styles.modalImage} />
+            )}
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.closeButton]}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.buttonText}>닫기</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.reselectButton]}
+                onPress={selectPhotoTapped}>
+                <Text style={styles.buttonText}>재선택</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.sendButton]}
+                onPress={handleOcr}>
+                <Text style={styles.buttonText}>전송</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };
@@ -214,6 +366,47 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 5,
     marginBottom: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+    elevation: 10,
+  },
+  modalImage: {
+    width: 250,
+    height: 250,
+    marginBottom: 20,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  modalButton: {
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    margin: 5,
+  },
+  closeButton: {
+    backgroundColor: 'grey',
+  },
+  reselectButton: {
+    backgroundColor: '#0077ff',
+  },
+  sendButton: {
+    backgroundColor: '#00cc00',
   },
 });
 

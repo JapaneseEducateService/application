@@ -293,7 +293,7 @@ const CommunityMain: React.FC<Props> = () => {
                   }}>
                   <Text
                     style={{fontSize: 17, fontWeight: 'bold', color: 'black'}}>
-                    다운받기
+                    복사하기
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 import Svg, { Circle, Text as SvgText } from 'react-native-svg'; // SvgText를 추가로 임포트합니다.
 
@@ -10,11 +10,10 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const AnimatedSvgText = Animated.createAnimatedComponent(SvgText); // Text 컴포넌트도 애니메이션 가능하게 만듭니다.
 
 const CircleChart: React.FC<Props> = ({percent}) => {
-  console.log(percent)
   const size = 60; // 원형 차트 크기
   const strokeWidth = 10; // 선 두께
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
+  const radius = useMemo(() => (size - strokeWidth) / 2, [size, strokeWidth]);
+  const circumference = useMemo(() => radius * 2 * Math.PI, [radius]);
 
   const animation = useRef(new Animated.Value(0)).current;
 
@@ -75,4 +74,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CircleChart;
+export default React.memo(CircleChart);
