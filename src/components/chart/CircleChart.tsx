@@ -60,7 +60,7 @@ const CircleChart: React.FC<Props> = ({percent}) => {
           y={size / 2 + 10} // 텍스트의 y 좌표 (원의 중심에서 약간 아래로 조정)
           textAnchor="middle" // 텍스트 정렬을 중앙으로 설정
         >
-          {`${percent}점`}
+          {`${percent}点`}
         </SvgText>
       </Svg>
     </View>

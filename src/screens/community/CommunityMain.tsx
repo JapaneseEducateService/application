@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,13 +7,13 @@ import {
   Text,
   Image,
   Modal,
-  Touchable,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {getToken} from '../../utils/AuthStorage';
+import { getToken } from '../../utils/AuthStorage';
 import api from '../../api';
 import BackButton from '../../components/button/backButton';
+import { useNavigation } from '@react-navigation/native';
 
 interface Props {}
 
@@ -21,8 +21,9 @@ const CommunityMain: React.FC<Props> = () => {
   const [publicNoteData, setPublicNoteData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false); // 모달창유무
   const [vocabularyData, setVocabularyData] = useState([]); // 선택한 단어장의 정보 가져오기
-
   const [person, setPerson] = useState(); // 작성자
+
+  const navigation = useNavigation(); // Add this line
 
   useEffect(() => {
     fetchData();
@@ -60,19 +61,21 @@ const CommunityMain: React.FC<Props> = () => {
     // 단어장 상세정보 받아오기
     const response = await api.get(`/vocabularyNote/${id}`);
     // 유저 키 추가
-    const noteWithUser = {...response.data.note, user: user || 'Unknown'};
+    const noteWithUser = { ...response.data.note, user: user || 'Unknown' };
     setVocabularyData(noteWithUser);
   };
 
   // 단어장 다운받기 버튼을 누르면 복사하는 함수
   const copyVocabulary = async () => {
     const response = await api.post(`/vocabularyNote/copy/${vocabularyData.id}`);
-    console.log(response.data)
+    console.log(response.data);
+    setModalVisible(false)
+    navigation.navigate('WordMain'); // Navigate to MyVocabularyList
   }
 
   return (
     <>
-      <View style={{zIndex: 999}}>
+      <View style={{ zIndex: 999 }}>
         <BackButton />
       </View>
       <View
@@ -89,7 +92,7 @@ const CommunityMain: React.FC<Props> = () => {
             color: 'white',
             fontWeight: 'bold',
           }}>
-          단어 창고
+          単語倉庫
         </Text>
       </View>
       <View style={styles.container}>
@@ -122,12 +125,12 @@ const CommunityMain: React.FC<Props> = () => {
                 alignItems: 'center',
                 borderRadius: 5,
               }}>
-              <Text style={{color: 'white'}}>{note.level}</Text>
+              <Text style={{ color: 'white' }}>{note.level=="UserCustom"?"User":note.level}</Text>
             </View>
 
             {/* 단어장 제목 */}
-            <View style={{justifyContent: 'center', marginLeft: 15}}>
-              <Text style={{fontSize: 20}}>{note.title}</Text>
+            <View style={{ justifyContent: 'center', marginLeft: 15 }}>
+              <Text style={{ fontSize: 20 }}>{note.title}</Text>
             </View>
             {/* 작성자 이름 */}
             <View
@@ -137,7 +140,7 @@ const CommunityMain: React.FC<Props> = () => {
                 width: 120,
                 alignItems: 'center',
               }}>
-              <Text style={{fontSize: 16, marginTop: 10, color: 'black'}}>
+              <Text style={{ fontSize: 16, marginTop: 10, color: 'black' }}>
                 {note.user}
               </Text>
             </View>
@@ -177,7 +180,7 @@ const CommunityMain: React.FC<Props> = () => {
                   marginLeft: 5,
                   // borderWidth: 1,
                 }}>
-                <Text style={{fontSize: 20, color: 'black'}}>
+                <Text style={{ fontSize: 20, color: 'black' }}>
                   {vocabularyData.title}
                 </Text>
               </View>
@@ -189,7 +192,7 @@ const CommunityMain: React.FC<Props> = () => {
                   marginLeft: 5,
                   // borderWidth: 1,
                 }}>
-                <Text style={{fontSize: 15, color: 'black'}}>
+                <Text style={{ fontSize: 15, color: 'black' }}>
                   작성자 : {vocabularyData.user}
                 </Text>
               </View>
@@ -204,7 +207,7 @@ const CommunityMain: React.FC<Props> = () => {
               />
 
               <ScrollView>
-                <View style={{width: '100%', alignItems: 'center'}}>
+                <View style={{ width: '100%', alignItems: 'center' }}>
                   {vocabularyData.kanji &&
                     vocabularyData.gana &&
                     vocabularyData.meaning &&
@@ -292,7 +295,7 @@ const CommunityMain: React.FC<Props> = () => {
                     copyVocabulary();
                   }}>
                   <Text
-                    style={{fontSize: 17, fontWeight: 'bold', color: 'black'}}>
+                    style={{ fontSize: 17, fontWeight: 'bold', color: 'black' }}>
                     복사하기
                   </Text>
                 </TouchableOpacity>
@@ -311,7 +314,7 @@ const CommunityMain: React.FC<Props> = () => {
                     setVocabularyData([]);
                   }}>
                   <Text
-                    style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>
+                    style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
                     닫기
                   </Text>
                 </TouchableOpacity>

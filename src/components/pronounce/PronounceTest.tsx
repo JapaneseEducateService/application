@@ -54,7 +54,11 @@ const PronounceTest: React.FC = () => {
 
   // 음성 파일 서버에 전송하는 함수
   const uploadFile = async (filePath: string, referenceText: string) => {
-    console.log("서버전송 사용자 음성 경로 + 기준 텍스트", filePath, referenceText);
+    console.log(
+      '서버전송 사용자 음성 경로 + 기준 텍스트',
+      filePath,
+      referenceText,
+    );
 
     try {
       // FormData 객체 생성
@@ -64,7 +68,12 @@ const PronounceTest: React.FC = () => {
       // 여기서는 filePath를 직접 사용합니다. 'file://' 접두사가 필요할 수 있습니다.
       let filename = filePath.split('/').pop(); // 파일 경로에서 파일 이름 추출
       const fileUri = `file://${filePath}`;
-      console.log("폼데이터에 추가하는 파일패스", fileUri, "파일 이름", filename);
+      console.log(
+        '폼데이터에 추가하는 파일패스',
+        fileUri,
+        '파일 이름',
+        filename,
+      );
       formData.append('audio', {
         uri: fileUri,
         type: 'audio/wav', // MIME 타입 지정
@@ -165,31 +174,30 @@ const PronounceTest: React.FC = () => {
 
   // 네이티브 모듈을 이용해서 TTS와 사용자 음성파일의 피치 비교를 하는 함수
   const pitchTest = (filePath: string) => {
-    console.log("파일경로 : ", filePath);
+    console.log('파일경로 : ', filePath);
     PitchModule.analyzePitch(filePath)
       .then(pitchValue => {
         console.log('Pitch detected:', pitchValue);
         const filteredPitchData = pitchValue.filter(item => item.pitch < 1000);
-  
+
         const userAudioPath = `${RNFetchBlob.fs.dirs.CacheDir}/UserAudio.wav`;
-        console.log("유저 음성 경로111", userAudioPath)
+        console.log('유저 음성 경로111', userAudioPath);
         const ttsAudioPath = `${RNFetchBlob.fs.dirs.CacheDir}/TTSAudio.wav`;
-        console.log("TTS 음성 경로111", ttsAudioPath)
-  
+        console.log('TTS 음성 경로111', ttsAudioPath);
+
         if (filePath === userAudioPath) {
           setPitchData(filteredPitchData);
           uploadFile(filePath, referenceText);
         } else if (filePath === ttsAudioPath) {
           setTTSPitchData(filteredPitchData);
         } else {
-          console.log("이상한경로포착", filePath);
+          console.log('이상한경로포착', filePath);
         }
       })
       .catch(error => {
         console.log('Error detecting pitch:', error);
       });
   };
-  
 
   const fileExists = async filePath => {
     try {
@@ -352,7 +360,7 @@ const PronounceTest: React.FC = () => {
       <View style={styles.header}>
         <BackButton />
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerTitle}>발음 평가</Text>
+          <Text style={styles.headerTitle}>発音評価</Text>
         </View>
       </View>
       <View style={styles.backgroundHeader}></View>
@@ -360,7 +368,7 @@ const PronounceTest: React.FC = () => {
       <View style={styles.mainContainer}>
         {/* 기준 텍스트 입력 창 */}
         <TextInput
-          placeholder="기준이 되는 텍스트를 입력해 주세요."
+          placeholder="基準となるテキストを入力してください."
           style={styles.input}
           onChangeText={text => setReferenceText(text)}
           multiline={true}
@@ -385,7 +393,7 @@ const PronounceTest: React.FC = () => {
               size={20}
               color={'white'}
             />
-            <Text style={styles.ttsButtonText}>음성으로 들어보기</Text>
+            <Text style={styles.ttsButtonText}>音声で聞く</Text>
           </TouchableOpacity>
         </View>
         {/* 피치 그래프 부분 */}
@@ -426,14 +434,14 @@ const PronounceTest: React.FC = () => {
                   onPress={onStopRecord}
                   style={styles.recordButton}>
                   <Icon name="stop" size={17} color={'white'} />
-                  <Text style={styles.recordButtonText}>녹음 종료</Text>
+                  <Text style={styles.recordButtonText}>録音終了</Text>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
                   onPress={onStartRecord}
                   style={styles.recordButton}>
                   <Icon name="mic" size={17} color={'white'} />
-                  <Text style={styles.recordButtonText}>녹음 시작</Text>
+                  <Text style={styles.recordButtonText}>録音開始</Text>
                 </TouchableOpacity>
               )}
               <TouchableOpacity onPress={onStartPlay} style={styles.playButton}>
@@ -449,7 +457,7 @@ const PronounceTest: React.FC = () => {
               )
             }
             style={styles.evaluateButton}>
-            <Text style={styles.evaluateButtonText}>평가하기</Text>
+            <Text style={styles.evaluateButtonText}>評価する</Text>
           </TouchableOpacity>
         </View>
 
@@ -468,7 +476,7 @@ const PronounceTest: React.FC = () => {
           {pronounceData && (
             <>
               <Text style={{color: 'grey', margin: 5, fontWeight: 'bold'}}>
-                측정 결과
+                評価結果
               </Text>
               {/* 기준 텍스트 출력 부분 ( + 점수에 따른 텍스트 색 변화 기능 추가해야 함) */}
               <View
@@ -493,40 +501,42 @@ const PronounceTest: React.FC = () => {
                 }}>
                 <View style={{width: '20%', alignItems: 'center'}}>
                   <CircleChart
-                    percent={
-                      Math.round(pronounceData.pronunciationAssessmentResult.AccuracyScore)
-                    }
+                    percent={Math.round(
+                      pronounceData.pronunciationAssessmentResult.AccuracyScore,
+                    )}
                   />
-                  <Text style={{color: '#006fff'}}>발음점수</Text>
+                  <Text style={{color: '#006fff'}}>発音</Text>
                 </View>
                 <View style={{width: '20%', alignItems: 'center'}}>
                   <CircleChart
-                    percent={
-                      Math.round(pronounceData.pronunciationAssessmentResult
-                        .CompletenessScore)
-                    }
+                    percent={Math.round(
+                      pronounceData.pronunciationAssessmentResult
+                        .CompletenessScore,
+                    )}
                   />
-                  <Text style={{color: '#006fff'}}>완전성</Text>
+                  <Text style={{color: '#006fff'}}>完全性</Text>
                 </View>
                 <View style={{width: '20%', alignItems: 'center'}}>
                   <CircleChart
-                    percent={
-                      Math.round(pronounceData.pronunciationAssessmentResult.FluencyScore)
-                    }
+                    percent={Math.round(
+                      pronounceData.pronunciationAssessmentResult.FluencyScore,
+                    )}
                   />
-                  <Text style={{color: '#006fff'}}>유창성</Text>
+                  <Text style={{color: '#006fff'}}>流暢さ</Text>
                 </View>
                 <View style={{width: '20%', alignItems: 'center'}}>
                   <CircleChart
-                    percent={
-                      Math.round(pronounceData.pronunciationAssessmentResult.PronScore)
-                    }
+                    percent={Math.round(
+                      pronounceData.pronunciationAssessmentResult.PronScore,
+                    )}
                   />
-                  <Text style={{color: '#006fff'}}>종합 점수</Text>
+                  <Text style={{color: '#006fff'}}>総合</Text>
                 </View>
                 <View style={{width: '20%', alignItems: 'center'}}>
-                  <CircleChart percent={Math.round(pronounceData.pitchComparisonResult)} />
-                  <Text style={{color: '#006fff'}}>피치 점수</Text>
+                  <CircleChart
+                    percent={Math.round(pronounceData.pitchComparisonResult)}
+                  />
+                  <Text style={{color: '#006fff'}}>ピッチ</Text>
                 </View>
               </View>
 
@@ -534,7 +544,7 @@ const PronounceTest: React.FC = () => {
                 {/* 잘못된 발음 표시하기 */}
                 {pronounceData?.pronunciationAssessmentResult?.Words.map(
                   (item, index) => (
-                    <View 
+                    <View
                       key={index}
                       style={{
                         width: '95%',
@@ -578,9 +588,9 @@ const PronounceTest: React.FC = () => {
                           }}>
                           {' '}
                           {item.ErrorType === 'None'
-                            ? '문제없음'
+                            ? '問題なし'
                             : item.ErrorType === 'Mispronunciation'
-                            ? '발음 틀림'
+                            ? '発音の間違い'
                             : item.ErrorType}
                         </Text>
                       </View>
@@ -623,7 +633,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 140,
     position: 'absolute',
-    
   },
   mainContainer: {
     flex: 1,
@@ -655,9 +664,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   ttsButtonText: {
-    fontSize: 12,
+    fontSize: 15,
     color: 'white',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 4,
   },
   recordingContainer: {
@@ -677,6 +686,9 @@ const styles = StyleSheet.create({
   },
   recordButtonText: {
     color: 'white',
+    fontSize: 15,
+    // fontWeight:'bold'
+    marginBottom: 3,
   },
   playButton: {
     width: 30,
@@ -701,6 +713,8 @@ const styles = StyleSheet.create({
   },
   evaluateButtonText: {
     color: 'white',
+    fontSize: 15,
+    marginBottom: 2,
   },
   pitchChartContainer: {
     width: '95%',

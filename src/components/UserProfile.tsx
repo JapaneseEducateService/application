@@ -52,7 +52,13 @@ const UserProfile: React.FC = () => {
     fetchData();
   }, []);
 
-  
+  const formatDate = dateString => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return `${year}년${month}월${day}일`;
+  };
 
   const handleDateChange = (event: any, selectedDate: Date | undefined) => {
     const currentDate = selectedDate || birthDate;
@@ -136,7 +142,7 @@ const UserProfile: React.FC = () => {
                   fontSize: 20,
                   color: 'white',
                 }}>
-                회원정보
+                会員情報
               </Text>
               <View
                 style={{
@@ -151,8 +157,8 @@ const UserProfile: React.FC = () => {
                 <Image source={require('../../assets/background2.jpg')} />
               </View>
               <View
-                style={{marginRight: '80%', marginTop: 10, marginBottom: 10}}>
-                <Text>이메일</Text>
+                style={{marginRight: '85%', marginTop: 10, marginBottom: 10}}>
+                <Text>メール</Text>
               </View>
               <TextInput
                 style={{
@@ -168,8 +174,8 @@ const UserProfile: React.FC = () => {
               />
 
               <View
-                style={{marginRight: '80%', marginTop: 10, marginBottom: 10}}>
-                <Text>닉네임</Text>
+                style={{marginRight: '75%', marginTop: 10, marginBottom: 10}}>
+                <Text>ニックネーム</Text>
               </View>
               <TextInput
                 style={{
@@ -186,7 +192,7 @@ const UserProfile: React.FC = () => {
 
               <View
                 style={{marginRight: '80%', marginTop: 10, marginBottom: 10}}>
-                <Text>생일</Text>
+                <Text>生年月日</Text>
               </View>
               <TouchableOpacity
                 disabled={!isEditing}
@@ -213,7 +219,7 @@ const UserProfile: React.FC = () => {
 
               <View
                 style={{marginRight: '80%', marginTop: 10, marginBottom: 10}}>
-                <Text>전화번호</Text>
+                <Text>電話番号</Text>
               </View>
               <TextInput
                 style={{
@@ -229,7 +235,7 @@ const UserProfile: React.FC = () => {
               />
 
               <View style={{marginTop: 10}}>
-                <Text>가입날짜 : {currentUserData.created_at}</Text>
+                <Text>加入日 : {formatDate(currentUserData.created_at)}</Text>
               </View>
             </View>
 
@@ -240,14 +246,14 @@ const UserProfile: React.FC = () => {
                     style={styles.buttonStyle}
                     onPress={() => setIsEditing(true)}
                     activeOpacity={0.7}>
-                    <Text style={styles.buttonText}>회원정보 수정</Text>
+                    <Text style={styles.buttonText}>会員情報の修正</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     style={styles.buttonStyle}
                     onPress={() => handleLogout()}
                     activeOpacity={0.7}>
-                    <Text style={styles.buttonText}>로그아웃</Text>
+                    <Text style={styles.buttonText}>ログアウト</Text>
                   </TouchableOpacity>
                 </>
               )}
@@ -257,7 +263,7 @@ const UserProfile: React.FC = () => {
                     style={styles.buttonStyle}
                     onPress={() => saveUserProfile()}
                     activeOpacity={0.7}>
-                    <Text style={styles.buttonText}>저장</Text>
+                    <Text style={styles.buttonText}>保存</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.buttonStyle}
@@ -265,7 +271,7 @@ const UserProfile: React.FC = () => {
                       setIsEditing(false);
                     }}
                     activeOpacity={0.7}>
-                    <Text style={styles.buttonText}>취소하기</Text>
+                    <Text style={styles.buttonText}>キャンセル</Text>
                   </TouchableOpacity>
                 </>
               )}

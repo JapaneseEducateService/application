@@ -47,7 +47,10 @@ const Login: React.FC<Props> = () => {
     console.log('입력한 유저 데이터 : ', userData);
 
     axios
-      .post('http://tamago-laravel-rb-474417567.ap-northeast-2.elb.amazonaws.com/api/login', userData)
+      .post(
+        'http://tamago-laravel-rb-474417567.ap-northeast-2.elb.amazonaws.com/api/login',
+        userData,
+      )
       .then(response => {
         if (response.status === 200) {
           // 로그인이 성공하면 입력창을다시 초기화 시켜줘야 함
@@ -91,7 +94,7 @@ const Login: React.FC<Props> = () => {
               marginBottom: 10,
               padding: 10,
             }}
-            placeholder="이메일"
+            placeholder="メールアドレス"
             value={userEmail}
             onChangeText={text => setUserEmail(text)}
           />
@@ -104,7 +107,7 @@ const Login: React.FC<Props> = () => {
               marginBottom: 20,
               padding: 10,
             }}
-            placeholder="비밀번호"
+            placeholder="パスワード"
             secureTextEntry={true}
             value={password}
             onChangeText={text => setPassword(text)}
@@ -127,11 +130,11 @@ const Login: React.FC<Props> = () => {
               elevation: 3,
             }}
             onPress={onLogin}>
-            <Text style={{color: 'white', fontSize: 16}}>로그인</Text>
+            <Text style={{color: 'white', fontSize: 16}}>ログイン</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={goToRegister}>
             <Text style={{color: 'blue', textAlign: 'center'}}>
-              계정이 없으신가요?
+              IDをお持ちでない方はこちら
             </Text>
           </TouchableOpacity>
         </View>

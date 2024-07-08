@@ -24,7 +24,7 @@ const WordMain: React.FC<WordMainProps> = ({navigation}) => {
           <BackButton />
         </View>
 
-        <Text style={styles.titleTxt}>단어장</Text>
+        <Text style={styles.titleTxt}>単語帳</Text>
         <View style={styles.line}></View>
       </View>
 
@@ -42,7 +42,7 @@ const WordMain: React.FC<WordMainProps> = ({navigation}) => {
             onPress={() => navigation.navigate('CreateVocabulary')}>
             <View style={styles.circle} />
             <Icon name="book-outline" size={60} color={'black'} />
-            <Text style={styles.menuTxt}>단어장 만들기</Text>
+            <Text style={styles.menuTxt}>単語帳作成</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -50,12 +50,12 @@ const WordMain: React.FC<WordMainProps> = ({navigation}) => {
             onPress={() => navigation.navigate('MyVocabularyList')}>
             <View style={styles.circle} />
             <Icon name="eye-outline" size={60} color={'black'} />
-            <Text style={styles.menuTxt}>내 단어장 보기</Text>
+            <Text style={styles.menuTxt}>マイ単語帳</Text>
           </TouchableOpacity>
         </View>
         <View style={{height: 30, width: '100%'}}>
           <Text style={{color: 'black', fontSize: 15, marginLeft: 10}}>
-            문장노트
+            文章ノート
           </Text>
         </View>
 
@@ -80,14 +80,14 @@ const WordMain: React.FC<WordMainProps> = ({navigation}) => {
             onPress={() => navigation.navigate('SentenceMain')}>
               <View style={styles.circle} />
               <Icon name="newspaper-outline" size={60} color={'black'} />
-            <Text style={styles.menuTxt}>문장 노트 만들기</Text>
+            <Text style={styles.menuTxt}>文章ノート作成</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.box}
             onPress={() => navigation.navigate('SentenceList')}>
               <View style={styles.circle} />
               <Icon name="glasses-outline" size={60} color={'black'} />
-            <Text style={styles.menuTxt}>문장 노트 보기</Text>
+            <Text style={styles.menuTxt}>マイ文章ノート</Text>
           </TouchableOpacity>
         </View>
       </View>

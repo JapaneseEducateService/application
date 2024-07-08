@@ -63,11 +63,11 @@ const MyVocabularyList: React.FC = () => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Text style={styles.txt}>내 단어장 리스트</Text>
+          <Text style={styles.txt}>マイ単語帳</Text>
         </View>
       </View>
       <ScrollView style={{flex: 1, backgroundColor: 'white', minHeight: 300}}>
-      <Text style={{margin:5, fontSize:15, fontWeight:'bold', color:'black'}}>유저 단어장</Text>
+      <Text style={{margin:5, fontSize:15, fontWeight:'bold', color:'black'}}>ユーザー単語帳</Text>
         {vocabularyList || adminVocabularyList ? (
           <>
             <View style={styles.container}>
@@ -86,7 +86,7 @@ const MyVocabularyList: React.FC = () => {
             <View style={{width: '100%', alignItems: 'center'}}>
               <View style={{width: '95%', borderWidth: 1, margin:10, borderColor:'#B4A2D4'}} />
             </View>
-            <Text style={{margin:5, fontSize:15, fontWeight:'bold', color:'black'}}>기본 단어장</Text>
+            <Text style={{margin:5, fontSize:15, fontWeight:'bold', color:'black'}}>基本単語帳</Text>
 
             <View style={styles.container}>
               {adminVocabularyList.map(note => (

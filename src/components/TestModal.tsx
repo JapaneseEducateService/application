@@ -8,7 +8,7 @@ const TestModal = ({ visible, onClose, onStartTest }) => {
     <Modal visible={visible} transparent={true} animationType="fade">
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>테스트하기</Text>
+          <Text style={styles.modalTitle}>テストする</Text>
           <View style={styles.levelsContainer}>
             {['N1', 'N2', 'N3', 'N4', 'N5'].map(level => (
               <TouchableOpacity
@@ -26,10 +26,10 @@ const TestModal = ({ visible, onClose, onStartTest }) => {
             <TouchableOpacity
               style={styles.startButton}
               onPress={() => onStartTest(selectedLevel)}>
-              <Text style={styles.startButtonText}>시작하기</Text>
+              <Text style={styles.startButtonText}>開始</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>닫기</Text>
+              <Text style={styles.closeButtonText}>閉じる</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -64,9 +64,9 @@ const Home: React.FC = () => {
     <View style={styles.container}>
       <Image
         source={require('../../assets/TamagoLogo.png')}
-        style={{width: 250, height: 60, marginTop: 50}}
+        style={{width: 270, height: 70, marginTop: 50}}
       />
-      <Text style={{fontSize: 15}}>일본어 학습 도우미 앱</Text>
+      <Text style={{fontSize: 17}}>日本語学習支援アプリ</Text>
       
       <Animated.Image
         style={[
@@ -95,7 +95,7 @@ const Home: React.FC = () => {
       </View>
 
       <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
-        <Text style={styles.buttonText}>로그인하기</Text>
+        <Text style={styles.buttonText}>ログイン</Text>
       </TouchableOpacity>
 
     </View>

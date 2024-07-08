@@ -23,6 +23,7 @@ const GrammarTest = ({ route, navigation }) => {
     try {
       const response = await api.get('/jlpt/grammar');
       const grammars = response.data[level][0].grammars;
+
       generateTestData(grammars);
     } catch (error) {
       console.error('서버 요청 에러:', error);
@@ -33,21 +34,50 @@ const GrammarTest = ({ route, navigation }) => {
 
   const generateTestData = (grammars) => {
     const questions = grammars.map((grammar) => {
+      console.log("문법22222", grammar.grammar);
+      console.log(grammar.grammar_examples[0]);
+
+      let japaneseExample = '';
+      let koreanExample = '';
+
+      // 예제가 존재하고 <br> 태그로 분리 가능한지 확인
+      if (grammar.grammar_examples && grammar.grammar_examples[0] && grammar.grammar_examples[0].example) {
+        const examples = grammar.grammar_examples[0].example.split('<br>');
+        japaneseExample = examples[0] || '';
+        koreanExample = examples[1] || '';
+      }
+
+      // 괄호와 괄호 안의 내용을 제거
+      const cleanJapaneseExample = japaneseExample.replace(/（[^）]*）/g, '');
+
+      // 특수 문자를 제거하여 비교
       const cleanGrammar = grammar.grammar.replace(/[\s~!@#$%^&*()_+|<>?:{}.,;'"[\]\\]/g, '');
-      const questionText = grammar.grammar_examples[0].example.replace(new RegExp(cleanGrammar, 'g'), '_____').split('<br>').join('\n');
+      const cleanJapaneseExampleWithoutSpecialChars = cleanJapaneseExample.replace(/[\s~!@#$%^&*()_+|<>?:{}.,;'"[\]\\]/g, '');
+
+      // 문법 패턴을 빈칸으로 대체
+      let questionText = cleanJapaneseExampleWithoutSpecialChars;
+      questionText = questionText.replace(new RegExp(cleanGrammar, 'g'), '_____');
+
       const correctAnswer = grammar.grammar;
       const incorrectAnswers = grammars
         .filter(g => g.grammar !== grammar.grammar)
         .sort(() => 0.5 - Math.random())
         .slice(0, 3)
         .map(g => g.grammar);
-      
+
+      // 빈칸이 생기지 않은 문제는 제외
+      if (!questionText.includes('_____')) {
+        return null;
+      }
+
       return {
-        questionText,
+        japaneseExample: questionText,
+        koreanExample: koreanExample.trim(),
         correctAnswer,
         options: shuffleArray([correctAnswer, ...incorrectAnswers]),
       };
-    });
+    }).filter(Boolean); // null 값을 제외
+
     setTestData(questions);
     setOptions(questions[0].options);
   };
@@ -91,8 +121,13 @@ const GrammarTest = ({ route, navigation }) => {
         <BackButton />
       </View>
       <View style={styles.container}>
-        <Text style={styles.title}>문제 {currentQuestion + 1} / {testData.length}</Text>
-        <Text style={styles.questionText}>{testData[currentQuestion].questionText}</Text>
+        <Text style={styles.title}>問題 {currentQuestion + 1} / {testData.length}</Text>
+        <Text style={styles.questionText}>
+          {testData[currentQuestion].japaneseExample}
+        </Text>
+        <Text style={styles.translationText}>
+          {'\n'}{testData[currentQuestion].koreanExample}
+        </Text>
         <FlatList
           data={options}
           renderItem={({ item }) => (
@@ -136,7 +171,13 @@ const styles = StyleSheet.create({
   },
   questionText: {
     fontSize: 18,
+    marginBottom: 10,
+    paddingLeft: 10,
+  },
+  translationText: {
+    fontSize: 18,
     marginBottom: 20,
+    paddingLeft: 10,
   },
   optionButton: {
     padding: 15,
@@ -161,14 +202,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   correctText: {
-    fontSize: 24,
+    fontSize: 90,
     color: '#28a745',
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 20,
   },
   wrongText: {
-    fontSize: 24,
+    fontSize: 90,
     color: '#dc3545',
     fontWeight: 'bold',
     textAlign: 'center',

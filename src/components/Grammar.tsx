@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import api from '../api';
-import { StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, FlatList} from 'react-native';
 import BackButton from './button/backButton';
 import GrammarModal from './GrammarModal';
 import LoadingBar from './LoadingBar';
 import TestModal from './TestModal';
 
-const Grammar: React.FC = ({ navigation }) => {
+const Grammar: React.FC = ({navigation}) => {
   const [grammarData, setGrammarData] = useState([]);
   const [selectedGrammar, setSelectedGrammar] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -53,12 +53,12 @@ const Grammar: React.FC = ({ navigation }) => {
     setTestModalVisible(false);
   };
 
-  const startTest = (level) => {
+  const startTest = level => {
     closeTestModal();
-    navigation.navigate('GrammarTest', { level });
+    navigation.navigate('GrammarTest', {level});
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({item}) => (
     <TouchableOpacity
       onPress={() => openModal(item)}
       style={styles.grammarItem}>
@@ -72,7 +72,7 @@ const Grammar: React.FC = ({ navigation }) => {
         <BackButton />
       </View>
       <View style={styles.headerContainer}>
-        <Text style={styles.title}>문법</Text>
+        <Text style={styles.title}>文法</Text>
         <TouchableOpacity
           onPress={openTestModal}
           style={{
@@ -83,11 +83,11 @@ const Grammar: React.FC = ({ navigation }) => {
             margin: 10,
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor:'#004bbb',
-            elevation:5,
+            backgroundColor: '#004bbb',
+            elevation: 5,
           }}>
           <Text style={{fontSize: 15, fontWeight: 'bold', color: 'white'}}>
-            Test
+            テスト
           </Text>
         </TouchableOpacity>
         <View style={styles.levelsContainer}>
@@ -140,9 +140,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#006fff',
     alignItems: 'center',
     paddingBottom: 20,
-    borderBottomLeftRadius:15,
-    borderBottomRightRadius:15,
-    elevation:15
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    elevation: 15,
   },
   listContainer: {
     flex: 1,

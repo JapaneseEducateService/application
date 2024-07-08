@@ -2,18 +2,11 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, TextInput, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import DatePicker from '@react-native-community/datetimepicker';
+import BackButton from './button/backButton';
 
 interface BackButtonProps {
   onPress: () => void;
 }
-
-const BackButton: React.FC<BackButtonProps> = ({onPress}) => {
-  return (
-    <TouchableOpacity onPress={onPress} style={{width: 40, height: 40}}>
-      <Text style={{fontSize: 16}}>뒤로</Text>
-    </TouchableOpacity>
-  );
-};
 
 const Register: React.FC = () => {
   const navigation = useNavigation();
@@ -42,13 +35,16 @@ const Register: React.FC = () => {
     };
 
     try {
-      const response = await fetch('http://tamago-laravel-rb-474417567.ap-northeast-2.elb.amazonaws.com/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        'http://tamago-laravel-rb-474417567.ap-northeast-2.elb.amazonaws.com/api/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
         },
-        body: JSON.stringify(requestData),
-      });
+      );
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -83,7 +79,7 @@ const Register: React.FC = () => {
     setEmail(value);
     // 이메일 형식 검증을 위한 정규 표현식
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    
+
     if (!emailPattern.test(value)) {
       setIsEmailValid(false);
     } else {
@@ -102,149 +98,152 @@ const Register: React.FC = () => {
   };
 
   return (
-    <View style={{padding: 20}}>
-      <BackButton onPress={() => navigation.goBack()} />
+    <>
+      <View style={{height:20}}>
+        <BackButton />
+      </View>
+      <View style={{padding: 20}}>
+        <View>
+          <View style={{alignItems: 'center'}}>
+            <Image
+              style={{width: 250, height: 70}}
+              source={require('../../assets/TamagoLogo.png')}></Image>
+            <Text style={{fontSize: 18, marginBottom: 20}}>新規登録</Text>
+          </View>
 
-      <View>
-        <View style={{alignItems: 'center'}}>
-          <Image 
-            style={{width:250, height:70}}
-            source={require('../../assets/TamagoLogo.png')}></Image>
-          <Text style={{fontSize: 18, marginBottom: 20}}>회원가입</Text>
-        </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <TextInput
+              style={{
+                width: 260,
+                height: 40,
+                borderBottomWidth: 1,
+                borderColor: 'gray',
+                marginBottom: 10,
+                paddingVertical: 5,
+              }}
+              placeholder="ニックネーム"
+              value={nickname}
+              onChangeText={text => setNickname(text)}
+            />
+            <TouchableOpacity style={{marginLeft: 10}}>
+              <Text
+                style={{color: 'blue', fontSize: 16}}
+                onPress={() => checkDuplicate(nickname)}>
+                重複確認
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          {/* 이메일 */}
           <TextInput
             style={{
-              width: 270,
+              width: 320,
               height: 40,
               borderBottomWidth: 1,
               borderColor: 'gray',
               marginBottom: 10,
               paddingVertical: 5,
             }}
-            placeholder="닉네임"
-            value={nickname}
-            onChangeText={text => setNickname(text)}
+            placeholder="メールアドレス"
+            value={email}
+            onChangeText={handleEmailChange}
           />
-          <TouchableOpacity style={{marginLeft: 10}}>
-            <Text
-              style={{color: 'blue', fontSize: 16}}
-              onPress={() => checkDuplicate(nickname)}>
-              중복 확인
+
+          {!isEmailValid ? (
+            <Text style={{color: 'red'}}>
+              正しいメール形式で入力してください。
             </Text>
+          ) : null}
+
+          <TextInput
+            style={{
+              width: 320,
+              height: 40,
+              borderBottomWidth: 1,
+              marginBottom: 10,
+              paddingVertical: 5,
+            }}
+            placeholder="パスワード"
+            secureTextEntry={true}
+            value={password}
+            onChangeText={handlePasswordChange}
+          />
+
+          <TextInput
+            style={{
+              width: 320,
+              height: 40,
+              borderBottomWidth: 1,
+              marginBottom: 10,
+              paddingVertical: 5,
+            }}
+            placeholder="パスワード再確認"
+            secureTextEntry={true}
+            value={confirmPassword}
+            onChangeText={handleConfirmPasswordChange}
+          />
+
+          {isPasswordValid && passwordMismatch ? (
+            <Text style={{color: 'red'}}>パスワードが一致しません。</Text>
+          ) : null}
+
+          {!isPasswordValid ? (
+            <Text style={{color: 'red'}}>
+              パスワードを6文字以上設定してください。
+            </Text>
+          ) : null}
+
+          <TextInput
+            style={{
+              width: 320,
+              height: 40,
+              borderBottomWidth: 1,
+              borderColor: 'gray',
+              marginBottom: 10,
+              paddingVertical: 5,
+            }}
+            placeholder="電話番号"
+            value={phoneNumber}
+            onChangeText={text => setPhoneNumber(text)}
+          />
+
+          <TouchableOpacity
+            style={{
+              width: 320,
+              height: 40,
+              borderBottomWidth: 1,
+              borderColor: 'gray',
+              marginBottom: 10,
+              justifyContent: 'center',
+            }}
+            onPress={() => setShowDatePicker(true)}>
+            <Text>{birthDate.toISOString().slice(0, 10)}</Text>
           </TouchableOpacity>
+
+          {showDatePicker && (
+            <DatePicker
+              value={birthDate}
+              mode="date"
+              display="spinner"
+              onChange={handleDateChange}
+            />
+          )}
         </View>
-
-        {/* 이메일 */}
-        <TextInput
-          style={{
-            width: 320,
-            height: 40,
-            borderBottomWidth: 1,
-            borderColor: 'gray',
-            marginBottom: 10,
-            paddingVertical: 5,
-          }}
-          placeholder="이메일"
-          value={email}
-          onChangeText={handleEmailChange}
-        />
-
-        {!isEmailValid ? (
-          <Text style={{color: 'red'}}>올바른 이메일 형식을 입력해주세요.</Text>
-        ) : null}
-
-        <TextInput
-          style={{
-            width: 320,
-            height: 40,
-            borderBottomWidth: 1,
-            marginBottom: 10,
-            paddingVertical: 5,
-          }}
-          placeholder="비밀번호"
-          secureTextEntry={true}
-          value={password}
-          onChangeText={handlePasswordChange}
-        />
-
-        <TextInput
-          style={{
-            width: 320,
-            height: 40,
-            borderBottomWidth: 1,
-            marginBottom: 10,
-            paddingVertical: 5,
-          }}
-          placeholder="비밀번호 확인"
-          secureTextEntry={true}
-          value={confirmPassword}
-          onChangeText={handleConfirmPasswordChange}
-        />
-
-        { isPasswordValid && passwordMismatch ? (
-          <Text style={{color: 'red'}}>비밀번호가 일치하지 않습니다.</Text>
-        ) : null}
-
-        {!isPasswordValid ? (
-          <Text style={{color: 'red'}}>
-            비밀번호를 6글자 이상 설정해주세요.
-          </Text>
-        ) : null}
-
-        
-
-        <TextInput
-          style={{
-            width: 320,
-            height: 40,
-            borderBottomWidth: 1,
-            borderColor: 'gray',
-            marginBottom: 10,
-            paddingVertical: 5,
-          }}
-          placeholder="전화번호"
-          value={phoneNumber}
-          onChangeText={text => setPhoneNumber(text)}
-        />
 
         <TouchableOpacity
           style={{
-            width: 320,
-            height: 40,
-            borderBottomWidth: 1,
-            borderColor: 'gray',
+            backgroundColor: passwordMismatch ? 'gray' : 'blue',
+            padding: 10,
+            alignItems: 'center',
             marginBottom: 10,
-            justifyContent: 'center',
+            marginTop: 50,
           }}
-          onPress={() => setShowDatePicker(true)}>
-          <Text>{birthDate.toISOString().slice(0, 10)}</Text>
+          onPress={onRegister}
+          disabled={passwordMismatch}>
+          <Text style={{color: 'white', fontSize: 16}}>新規登録</Text>
         </TouchableOpacity>
-
-        {showDatePicker && (
-          <DatePicker
-            value={birthDate}
-            mode="date"
-            display="spinner"
-            onChange={handleDateChange}
-          />
-        )}
       </View>
-
-      <TouchableOpacity
-        style={{
-          backgroundColor: passwordMismatch ? 'gray' : 'blue',
-          padding: 10,
-          alignItems: 'center',
-          marginBottom: 10,
-          marginTop: 50,
-        }}
-        onPress={onRegister}
-        disabled={passwordMismatch}>
-        <Text style={{color: 'white', fontSize: 16}}>회원가입</Text>
-      </TouchableOpacity>
-    </View>
+    </>
   );
 };
 

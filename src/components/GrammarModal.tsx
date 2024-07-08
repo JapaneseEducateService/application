@@ -16,19 +16,19 @@ const GrammarModal = ({visible, onClose, grammar}) => {
           <Text style={styles.modalTitle}>{grammar.grammar}</Text>
           <ScrollView style={styles.contentContainer}>
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>의미</Text>
+              <Text style={styles.sectionTitle}>意味</Text>
               <Text style={styles.sectionText}>{grammar.meaning}</Text>
             </View>
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>설명</Text>
+              <Text style={styles.sectionTitle}>説明</Text>
               <Text style={styles.sectionText}>{grammar.explain}</Text>
             </View>
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>접속 방법</Text>
+              <Text style={styles.sectionTitle}>活用</Text>
               <Text style={styles.sectionText}>{grammar.conjunction}</Text>
             </View>
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>예문</Text>
+              <Text style={styles.sectionTitle}>例文</Text>
               {grammar.grammar_examples.map(example => (
                 <View key={example.id} style={styles.exampleContainer}>
                   {example.example.split('<br>').map((line, index) => (
@@ -40,7 +40,7 @@ const GrammarModal = ({visible, onClose, grammar}) => {
               ))}
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>닫기</Text>
+              <Text style={styles.closeButtonText}>閉じる</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: 'white',
     fontSize: 16,
+    fontWeight:'bold',
   },
 });
 

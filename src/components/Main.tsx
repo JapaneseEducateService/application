@@ -48,32 +48,32 @@ const Main: React.FC = () => {
 
   const data: Item[] = [
     {
-      itemId: 'PronounceTest',
-      title: '발음 평가',
-      description: '원하는 문장을 자유롭게',
-      subDescription: 'AI를 사용한 발음 상세 교정',
-      image: require('../../assets/background.jpg'),
-    },
-    {
       itemId: 'WordMain',
-      title: '단어장 / 문장노트',
-      description: '사진으로 편하고 빠르게',
-      subDescription: 'OCR기술로 빠른 단어장 생성,',
+      title: '単語帳 / 文章ノート',
+      description: '写真で簡単・迅速に',
+      subDescription: 'OCR技術を活用し、EXCELファイルやカメラ、アルバムを通じた自動単語帳生成',
       image: require('../../assets/background2.jpg'),
     },
     {
+      itemId: 'CommunityMain',
+      title: '単語倉庫',
+      description: '単語帳の共有',
+      subDescription: 'ユーザーが作った単語帳を調べて、気に入ったら自分の単語帳にコピー',
+      image: require('../../assets/background4.jpeg'),
+    },
+    {
       itemId: 'Grammar',
-      title: '문법',
-      description: '올바른 문법 학습',
-      subDescription: '문법퀴즈를 통한 학습',
+      title: '文法勉強',
+      description: '正しい文法を学ぶ',
+      subDescription: 'JLPTレベル別文法の詳細と簡単な4肢択一式文法クイズ',
       image: require('../../assets/background3.jpg'),
     },
     {
-      itemId: 'CommunityMain',
-      title: '단어 창고',
-      description: '단어장의 공유',
-      subDescription: '유저들이 직접 만든 단어장을 다운',
-      image: require('../../assets/background4.jpeg'),
+      itemId: 'PronounceTest',
+      title: '発音評価',
+      description: '好きな文章を自由に',
+      subDescription: '標準的な日本語の声を聞いて、自分の声を録音して、日本語の発音と高さを評価',
+      image: require('../../assets/background.jpg'),
     },
   ];
 
@@ -159,18 +159,37 @@ const Main: React.FC = () => {
         </TouchableOpacity>
 
         <Animated.View style={{opacity, alignItems: 'center'}}>
-          <Text
+          <View
             style={{
-              fontSize: 20,
-              color: 'white',
-              marginTop: 100,
-              fontWeight: 'bold',
+              width: 200,
+              height: 50,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 80,
             }}>
-            {item.description}
-          </Text>
-          <Text style={{fontSize: 15, color: 'white', marginTop: 10}}>
-            {item.subDescription}
-          </Text>
+            <Text
+              style={{
+                fontSize: 20,
+                color: 'white',
+                fontWeight: 'bold',
+              }}>
+              {item.description}
+            </Text>
+          </View>
+          <View
+            style={{
+              width: 230,
+              height: 300,
+              alignItems:'center'
+            }}>
+            <Text
+              style={{
+                fontSize: 15,
+                color: 'white',
+              }}>
+              {item.subDescription}
+            </Text>
+          </View>
         </Animated.View>
       </View>
     );
@@ -219,7 +238,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
   },
   buttonText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: 'bold',
     backgroundColor: 'white',
     width: '100%',

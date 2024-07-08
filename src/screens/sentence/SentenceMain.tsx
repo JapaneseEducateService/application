@@ -182,20 +182,20 @@ const SentenceMain: React.FC = () => {
         <BackButton />
       </View>
       <View style={styles.container}>
-        <Text style={styles.title}>문장노트 만들기</Text>
+        <Text style={styles.title}>文章ノート作成</Text>
         <TextInput
           style={styles.input}
-          placeholder="단어장의 제목을 입력해주세요"
+          placeholder="単語帳のタイトルを入力してください"
           placeholderTextColor={'white'}
           onChangeText={text => setTitle(text)}
         />
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Excel로 문장 입력</Text>
+            <Text style={styles.buttonText}>Excelで文章を入力</Text>
           </TouchableOpacity>
           <View style={styles.buttonSpacer} />
           <TouchableOpacity style={styles.button} onPress={selectPhotoTapped}>
-            <Text style={styles.buttonText}>OCR로 문장 입력</Text>
+            <Text style={styles.buttonText}>イメージで文章を入力</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -215,7 +215,7 @@ const SentenceMain: React.FC = () => {
               <View style={styles.sentenceBox}>
                 <TextInput
                   style={styles.sentenceTextInput}
-                  placeholder="문장을 입력해주세요"
+                  placeholder="文章を入力してください"
                   value={item.sentence}
                   onChangeText={text =>
                     handleInputChange(index, 'sentence', text)
@@ -223,7 +223,7 @@ const SentenceMain: React.FC = () => {
                 />
                 <TextInput
                   style={styles.sentenceTextInput}
-                  placeholder="뜻을 입력해주세요"
+                  placeholder="意味を入力してください"
                   value={item.meaning}
                   onChangeText={text =>
                     handleInputChange(index, 'meaning', text)
@@ -236,13 +236,13 @@ const SentenceMain: React.FC = () => {
 
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity onPress={addItem} style={styles.settingButton}>
-            <Text style={styles.settingButtonTxt}>항목 추가</Text>
+            <Text style={styles.settingButtonTxt}>アイテム追加</Text>
           </TouchableOpacity>
 
           <View style={{width: 20}}></View>
 
           <TouchableOpacity onPress={saveData} style={styles.settingButton}>
-            <Text style={styles.settingButtonTxt}>저장하기</Text>
+            <Text style={styles.settingButtonTxt}>保存する</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -258,17 +258,17 @@ const SentenceMain: React.FC = () => {
               <TouchableOpacity
                 style={[styles.modalButton, styles.closeButton]}
                 onPress={() => setModalVisible(false)}>
-                <Text style={styles.buttonText}>닫기</Text>
+                <Text style={styles.buttonText}>閉じる</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, styles.reselectButton]}
                 onPress={selectPhotoTapped}>
-                <Text style={styles.buttonText}>재선택</Text>
+                <Text style={styles.buttonText}>再選択</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, styles.sendButton]}
                 onPress={handleOcr}>
-                <Text style={styles.buttonText}>전송</Text>
+                <Text style={styles.buttonText}>送信</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   settingButton: {
-    width: '20%',
+    width: '30%',
     height: 40,
     alignItems: 'center',
     borderWidth: 1,
