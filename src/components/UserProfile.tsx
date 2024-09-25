@@ -86,7 +86,7 @@ const UserProfile: React.FC = () => {
     if (Object.keys(changes).length > 0) {
       try {
         const response = await api.patch('/user', changes);
-        Alert.alert('회원 정보 수정이 완료되었습니다.');
+        Alert.alert('会員情報修正ができました。');
         fetchData(); // 데이터 새로고침
       } catch (error) {
         console.error('회원 정보 수정 실패:', error);

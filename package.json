@@ -30,6 +30,7 @@
     "react-native-app-auth": "^7.1.3",
     "react-native-audio-recorder-player": "^3.6.6",
     "react-native-chart-kit": "^6.12.0",
+    "react-native-document-picker": "^9.3.1",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.16.0",
     "react-native-image-picker": "^7.1.0",
@@ -43,7 +44,8 @@
     "react-native-vector-icons": "^10.0.3",
     "react-navigation": "^4.4.4",
     "react-navigation-stack": "^2.10.4",
-    "rn-fetch-blob": "^0.12.0"
+    "rn-fetch-blob": "^0.12.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

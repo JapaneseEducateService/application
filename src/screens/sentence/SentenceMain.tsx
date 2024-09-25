@@ -16,6 +16,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import api from '../../api';
 import {launchImageLibrary, Asset} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
+import DocumentPicker, {types} from 'react-native-document-picker';
+import {getToken} from '../../utils/AuthStorage';
+import RNFS from 'react-native-fs';
+import * as XLSX from 'xlsx';
 
 const SentenceMain: React.FC = () => {
   const scrollViewRef = useRef<ScrollView>(null); // ScrollView의 ref를 만듭니다.
@@ -23,6 +27,7 @@ const SentenceMain: React.FC = () => {
 
   const [title, setTitle] = useState(''); // 제목
   const [modalVisible, setModalVisible] = useState(false); // 모달 상태
+
   // 유저가 입력한 문장 데이터 (기본 4개)
   const [sentenceData, setSentenceData] = useState([
     {id: 1, sentence: '', meaning: ''},
@@ -176,6 +181,53 @@ const SentenceMain: React.FC = () => {
     }
   };
 
+// 엑셀 파일 선택 및 내용 읽기
+const handleExcelRead = async () => {
+  try {
+    // 엑셀 파일 선택
+    const res = await DocumentPicker.pick({
+      type: [DocumentPicker.types.xlsx], // xlsx 파일만 선택
+    });
+
+    if (res && res.length > 0) {
+      const filePath = res[0].uri;
+
+      // RNFS를 사용하여 파일을 읽음
+      const fileContent = await RNFS.readFile(filePath, 'base64');
+
+      // 워크북을 읽기
+      const workbook = XLSX.read(fileContent, { type: 'base64' });
+
+      // 첫 번째 시트의 데이터 읽기
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      // 첫 번째 열과 두 번째 열의 데이터 추출하여 sentenceData에 추가
+      const extractedData = jsonData.map(row => ({
+        sentence: row[0],  // 첫 번째 열
+        meaning: row[1],   // 두 번째 열
+      })).filter(row => row.sentence !== undefined && row.meaning !== undefined); // undefined 제거
+
+      console.log('추출된 데이터:', extractedData);
+
+      // 기존 sentenceData를 지우고 새로운 엑셀 데이터로 대체
+      setSentenceData(extractedData.map((item, index) => ({
+        id: index + 1, // 새로운 id 생성
+        sentence: item.sentence,
+        meaning: item.meaning,
+      })));
+    }
+  } catch (err) {
+    if (DocumentPicker.isCancel(err)) {
+      console.log('사용자가 파일 선택을 취소했습니다.');
+    } else {
+      console.error('엑셀 파일 읽기 중 오류 발생:', err);
+    }
+  }
+};
+
+
   return (
     <>
       <View style={{zIndex: 99}}>
@@ -191,7 +243,9 @@ const SentenceMain: React.FC = () => {
         />
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Excelで文章を入力</Text>
+            <Text style={styles.buttonText} onPress={handleExcelRead}>
+              Excelで文章を入力
+            </Text>
           </TouchableOpacity>
           <View style={styles.buttonSpacer} />
           <TouchableOpacity style={styles.button} onPress={selectPhotoTapped}>
@@ -205,7 +259,7 @@ const SentenceMain: React.FC = () => {
           contentContainerStyle={styles.sentenceContentContainer}
           ref={scrollViewRef}>
           {sentenceData.map((item, index) => (
-            <View key={item.id}>
+            <View key={item.sentence + index}>
               <View style={styles.sentenceNumberBox}>
                 <Text style={styles.sentenceNumber}>00{item.id}</Text>
                 <TouchableOpacity onPress={() => deleteItem(index)}>
